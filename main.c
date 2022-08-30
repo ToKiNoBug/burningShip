@@ -2,7 +2,13 @@
 
 #include <stdio.h>
 
+#include <time.h>
+
+#include <omp.h>
+
 int main(int argc, char **argv) {
+
+  omp_set_num_threads(4);
 
   cplx_d C = 0.375 + 0i;
 
@@ -16,12 +22,16 @@ int main(int argc, char **argv) {
   }
   printf("Start computation\n");
 
+  clock_t clk = clock();
+
   compute_frame(img, -2 - 2i, 2 + 2i, 3000);
 
-  printf("Finished computation\n");
+  clk = clock() - clk;
 
-  write_uncompressed(img, "data");
-  // write_compressed(img, "data.gz");
+  printf("Finished computation in %d miliseconds\n", clk);
+
+  // write_uncompressed(img, "data");
+  write_compressed(img, "data.gz");
 
   printf("finished writting");
 

@@ -22,7 +22,7 @@ include_directories(${PNG_INCLUDE_DIR})
 
 add_executable(burningShip ship_iteration.h main.c compute_frame.c write_frame.c)
 
-target_link_libraries(burningShip OpenMP::OpenMP_CXX png z)
+target_link_libraries(burningShip OpenMP::OpenMP_C png z)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

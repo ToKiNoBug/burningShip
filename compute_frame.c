@@ -1,6 +1,8 @@
 #include "ship_iteration.h"
+#include <omp.h>
+#include <string.h>
 
-void iterate(const cplx_d C, cplx_union_d *z) {
+inline void iterate(const cplx_d C, cplx_union_d *z) {
 
   static const uint64_t mask = ~(1ULL << 63);
   // take the abs value to real and imag
@@ -45,12 +47,18 @@ void compute_frame(mat_age *m, const cplx_d minmin, const cplx_d maxmax,
   const double row_span = cimag(maxmax) - cimag(minmin);
   const double col_span = creal(maxmax) - creal(minmin);
 
-#pragma omp parllel for
-  for (int c = 0; c < cols; c++) {
-    for (int r = 0; r < rows; r++) {
-      const cplx_d C = minmin + (col_span * c) / (cols - 1) +
+  omp_set_num_threads(4);
+
+#pragma omp parallel for schedule(dynamic)
+  for (int r = 0; r < rows; r++) {
+    // printf("%d", omp_get_thread_num());
+    // int16_t cache[cache_size];
+    for (int c = 0; c < cols; c++) {
+
+      const cplx_d C = minmin + (col_span * (cols - 1 - c)) / (cols - 1) +
                        (row_span * (r)) / (rows - 1) * 1i;
 
+      // cache[c % cache_size]
       m->data[r][c] = compute_age(C, max_iterations);
     }
   }
