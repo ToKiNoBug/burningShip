@@ -1,4 +1,4 @@
-#include "ship_iteration.h"
+#include "burning_ship.h"
 #include <omp.h>
 #include <string.h>
 
@@ -46,8 +46,6 @@ void compute_frame(mat_age *m, const cplx_d minmin, const cplx_d maxmax,
 
   const double row_span = cimag(maxmax) - cimag(minmin);
   const double col_span = creal(maxmax) - creal(minmin);
-
-  omp_set_num_threads(4);
 
 #pragma omp parallel for schedule(dynamic)
   for (int r = 0; r < rows; r++) {

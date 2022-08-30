@@ -1,4 +1,4 @@
-#include "ship_iteration.h"
+#include "burning_ship.h"
 
 #include <stdio.h>
 

@@ -11,18 +11,9 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/compile_commands.json)
     file(REMOVE ${CMAKE_SOURCE_DIR}/compile_commands.json)
 endif()
 
+add_subdirectory(burning_ship)
+add_subdirectory(test_burning_ship)
 
-find_package(zlib REQUIRED)
-find_package(PNG REQUIRED)
-find_package(OpenMP REQUIRED)
-
-
-include_directories(${ZLIB_INCLUDE_DIR})
-include_directories(${PNG_INCLUDE_DIR})
-
-add_executable(burningShip ship_iteration.h main.c compute_frame.c write_frame.c)
-
-target_link_libraries(burningShip OpenMP::OpenMP_C png z)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
