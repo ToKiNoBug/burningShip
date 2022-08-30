@@ -30,8 +30,8 @@ int main(int argc, char **argv) {
 
   printf("Finished computation in %d miliseconds\n", clk);
 
-  // write_uncompressed(img, "data");
-  write_compressed(img, "data.gz");
+  write_uncompressed(img, "data");
+  // write_compressed(img, "data.gz");
 
   printf("finished writting");
 
