@@ -1,6 +1,28 @@
 #include "burning_ship.h"
 #include <omp.h>
+#include <stdio.h>
 #include <string.h>
+
+
+bool check_sizes() {
+  printf("Checking the size of bs_uint,bs_float and bs_cplx...\n");
+  if (sizeof(bs_cplx) != 2 * sizeof(bs_float)) {
+    printf("Size check failed! Size of bs_cplx is %u, while size of bs_float "
+           "is %u\n",
+           sizeof(bs_cplx), sizeof(bs_float));
+    return false;
+  }
+
+  if (sizeof(bs_float) != sizeof(bs_uint)) {
+    printf("Size check failed! Size of bs_float is %u, while size of bs_uint "
+           "is %u\n",
+           sizeof(bs_float), sizeof(bs_uint));
+    return false;
+  }
+
+  printf("Size check succeed, size of bs_float is %u\n", sizeof(bs_float));
+  return true;
+}
 
 void iterate(const cplx_d C, cplx_union_d *z) {
   static const uint8_t mask = 0b0111111;

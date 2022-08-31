@@ -6,6 +6,10 @@
 
 int main(int argc, char *argv[]) {
 
+  if (!::check_sizes()) {
+    return 1;
+  }
+
   QApplication a(argc, argv);
 
   /*
@@ -21,5 +25,8 @@ int main(int argc, char *argv[]) {
   */
   zoomer w;
   w.show();
+
+  w.repaint();
+
   return a.exec();
 }

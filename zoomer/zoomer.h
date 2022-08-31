@@ -18,6 +18,8 @@ public:
   explicit zoomer(QWidget *parent = nullptr);
   ~zoomer();
 
+  void repaint();
+
 private:
   Ui::zoomer *ui;
 
@@ -25,8 +27,6 @@ private:
   cplx_union_d maxmax;
 
   void display_range() const;
-
-  void repaint() const;
 
 public slots:
 

@@ -1,6 +1,8 @@
 #ifndef BURNING_SHIP_H
 #define BURNING_SHIP_H
 
+#include <quadmath.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif // #ifdef __cplusplus
@@ -9,9 +11,9 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef double bs_float;
-typedef uint64_t bs_uint;
-typedef double _Complex bs_cplx;
+typedef __float128 bs_float;
+typedef __uint128_t bs_uint;
+typedef __complex128 bs_cplx;
 
 static const int size_of_bs_float = sizeof(bs_float);
 
@@ -53,6 +55,8 @@ typedef struct {
 */
 
 void render(const mat_age *const, uint8_t *const, const int16_t max_iterations);
+
+bool check_sizes();
 
 #ifdef __cplusplus
 }

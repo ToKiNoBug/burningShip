@@ -19,44 +19,31 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_show_minmin">
-     <property name="text">
-      <string>Minmin : </string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="label_show_scale">
-     <property name="text">
-      <string>Scale by height : </string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QDoubleSpinBox" name="spin_zoom_speed">
-     <property name="prefix">
-      <string>scale per scroll : </string>
-     </property>
-     <property name="minimum">
-      <double>1.050000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>16.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.500000000000000</double>
-     </property>
-     <property name="value">
-      <double>2.000000000000000</double>
-     </property>
-    </widget>
-   </item>
+  <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,0">
    <item row="1" column="0">
     <widget class="QLabel" name="label_show_mouse">
      <property name="text">
       <string>Mouse : </string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="3">
+    <widget class="QLabel" name="label_show_maxmax">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Maxmax : </string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_show_minmin">
+     <property name="text">
+      <string>Minmin : </string>
      </property>
     </widget>
    </item>
@@ -89,6 +76,13 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="label_show_scale">
+     <property name="text">
+      <string>Scale by height : </string>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="0" colspan="2">
     <widget class="QLineEdit" name="show_center_hex">
      <property name="text">
@@ -99,18 +93,53 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QLabel" name="label_show_maxmax">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="2" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="leftMargin">
+      <number>0</number>
      </property>
-     <property name="text">
-      <string>Maxmax : </string>
-     </property>
-    </widget>
+     <item>
+      <widget class="QDoubleSpinBox" name="spin_zoom_speed">
+       <property name="prefix">
+        <string>scale per scroll : </string>
+       </property>
+       <property name="minimum">
+        <double>1.050000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>16.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.500000000000000</double>
+       </property>
+       <property name="value">
+        <double>2.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spin_max_iter">
+       <property name="suffix">
+        <string/>
+       </property>
+       <property name="prefix">
+        <string>max iter : </string>
+       </property>
+       <property name="minimum">
+        <number>50</number>
+       </property>
+       <property name="maximum">
+        <number>65535</number>
+       </property>
+       <property name="singleStep">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>3000</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
