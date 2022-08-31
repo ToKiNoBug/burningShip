@@ -2,6 +2,7 @@
 #include "ui_zoomer.h"
 #include <QByteArray>
 
+#include <ctime>
 #include <iostream>
 
 using std::cout, std::endl;
@@ -118,8 +119,10 @@ void zoomer::repaint() {
     cout << "Failed to allocate space for image" << endl;
   }
 
+  std::clock_t clk = std::clock();
   ::compute_frame(mat, this->minmin.value, this->maxmax.value,
                   ui->spin_max_iter->value());
+  clk = std::clock() - clk;
 
   ::render(mat, img.scanLine(0), ui->spin_max_iter->value());
 
@@ -127,7 +130,9 @@ void zoomer::repaint() {
 
   ui->image->setPixmap(QPixmap::fromImage(img));
 
-  this->setWindowTitle("Fractal zoomer");
+  this->setWindowTitle(
+      QStringLiteral("Fractal zoomer. Computation finished in ") +
+      QString::number(clk * 1000.0 / CLOCKS_PER_SEC) + " milisecond");
 }
 
 void zoomer::update_scale(const double r_relative_pos,
