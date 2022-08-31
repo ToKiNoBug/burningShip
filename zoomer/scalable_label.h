@@ -8,12 +8,16 @@
 #include <QEvent>
 #include <QMouseEvent>
 
+#include <mutex>
+
 class scalable_label : public QLabel {
   Q_OBJECT
 public:
   explicit scalable_label(QWidget *parent = nullptr);
 
   volatile bool is_busy = false;
+
+  std::mutex lock;
 
 signals:
   void zoomed(const double r_relative_pos, const double c_relative_pos,

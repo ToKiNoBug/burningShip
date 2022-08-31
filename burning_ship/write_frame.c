@@ -27,6 +27,12 @@ bool write_compressed(const mat_age *img, const char *path) {
     return false;
   }
 
+  const size_t rows = burning_ship_rows;
+  const size_t cols = burning_ship_cols;
+
+  gzfwrite(&rows, 1, sizeof(size_t), zFile);
+  gzfwrite(&cols, 1, sizeof(size_t), zFile);
+
   gzfwrite(img, 1, (burning_ship_rows * burning_ship_cols), zFile);
 
   gzclose(zFile);

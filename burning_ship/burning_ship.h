@@ -1,6 +1,9 @@
 #ifndef BURNING_SHIP_H
 #define BURNING_SHIP_H
 
+// Uncomment this line to generate mandelbrot fractal
+//#define BS_MANDELBROT
+
 #include <quadmath.h>
 
 #ifdef __cplusplus
@@ -46,6 +49,7 @@ void compute_frame(mat_age *, const cplx_d minmin, const cplx_d maxmax,
 
 bool write_uncompressed(const mat_age *, const char *);
 
+// the first 16 bytes are the rows and cols in size_t
 bool write_compressed(const mat_age *, const char *);
 /*
 typedef struct {

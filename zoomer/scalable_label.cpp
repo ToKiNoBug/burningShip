@@ -10,6 +10,10 @@ scalable_label::scalable_label(QWidget *parent) : QLabel(parent) {
 
 void scalable_label::wheelEvent(QWheelEvent *event) {
 
+  if (!this->lock.try_lock()) {
+    return;
+  }
+
   const QPointF point = event->position();
 
   // bool is_inverted = event->isInverted();
@@ -34,6 +38,8 @@ void scalable_label::wheelEvent(QWheelEvent *event) {
          << endl;
          */
   //<< ", inverted = " << (is_inverted ? "true" : "false") << endl;
+
+  this->lock.unlock();
 }
 
 void scalable_label::mouseMoveEvent(QMouseEvent *event) {

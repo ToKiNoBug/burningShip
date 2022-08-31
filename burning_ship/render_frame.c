@@ -39,7 +39,7 @@ void render(const mat_age *const src, uint8_t *const dest,
         dest[idx] = color_of_negative_1;
       } else {
         dest[idx] =
-            color_span * (src->data[r][c] - min_positive) * span_positive +
+            color_span * (src->data[r][c] - min_positive) / span_positive +
             color_min;
       }
     }

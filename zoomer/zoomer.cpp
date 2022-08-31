@@ -40,7 +40,7 @@ void zoomer::mouse_move(const double r_relative_pos,
   QString str = "Mouse : ";
   str += QString::number((double)mouse.fl[0]);
   if (mouse.fl[1] >= 0)
-    str += '+';
+    str += "+";
 
   str += QString::number((double)mouse.fl[1]) + 'i';
 
@@ -54,7 +54,7 @@ void zoomer::display_range() const {
 
     str += QString::number((double)this->minmin.fl[0]);
     if (this->minmin.fl[1] >= 0)
-      str += '+';
+      str += "+";
     str += QString::number((double)this->minmin.fl[1]) + 'i';
     ui->label_show_minmin->setText(str);
   }
@@ -64,15 +64,14 @@ void zoomer::display_range() const {
 
     str += QString::number((double)this->maxmax.fl[0]);
     if (this->maxmax.fl[1] >= 0)
-      str += '+';
+      str += "+";
     str += QString::number((double)this->maxmax.fl[1]) + 'i';
     ui->label_show_maxmax->setText(str);
   }
 
   const double r_span = this->maxmax.fl[1] - this->minmin.fl[1];
 
-  ui->label_show_scale->setText(QStringLiteral("Scale by height : ") +
-                                QString::number(r_span));
+  ui->show_scale->setText(QString::number(r_span));
 
   cplx_union_d center;
   center.value = (this->maxmax.value + this->minmin.value) / 2;
@@ -83,14 +82,14 @@ void zoomer::display_range() const {
     str += QString::number((double)center.fl[0]);
 
     if (center.fl[1] >= 0)
-      str += '+';
+      str += "+";
     str += QString::number((double)center.fl[1]) + 'i';
 
     ui->label_show_center_dec->setText(str);
   }
 
   {
-    QString str = QStringLiteral("Center in hex : 0x");
+    QString str = QStringLiteral("0x");
 
     char *bin = (char *)(&center);
 
@@ -137,7 +136,7 @@ void zoomer::repaint() {
 
   this->setWindowTitle(
       QStringLiteral("Fractal zoomer. Computation finished in ") +
-      QString::number(clk * 1000.0 / CLOCKS_PER_SEC) + " milisecond");
+      QString::number(clk * 1000.0 / CLOCKS_PER_SEC) + " ms");
 }
 
 void zoomer::update_scale(const double r_relative_pos,
@@ -166,11 +165,7 @@ void zoomer::update_scale(const double r_relative_pos,
 
   display_range();
 
-  ui->image->setEnabled(false);
-
   repaint();
-
-  ui->image->setEnabled(true);
 
   // const cplx_d now_center = (this->maxmax.value + this->minmin.value) / 2;
 }

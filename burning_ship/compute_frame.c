@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 bool check_sizes() {
   printf("Checking the size of bs_uint,bs_float and bs_cplx...\n");
   if (sizeof(bs_cplx) != 2 * sizeof(bs_float)) {
@@ -34,9 +33,10 @@ void iterate(const cplx_d C, cplx_union_d *z) {
   // z->u64[0] &= mask;
   // z->u64[1] &= mask;
 
+#ifndef BS_MANDELBROT
   z->bytes[size_of_bs_float - 1] &= mask;
   z->bytes[2 * size_of_bs_float - 1] &= mask;
-
+#endif
   z->value = z->value * z->value + C;
 
   // const int size=sizeof(val);
