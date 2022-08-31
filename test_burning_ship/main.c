@@ -6,6 +6,8 @@
 
 #include <omp.h>
 
+#include <stdlib.h>
+
 int main(int argc, char **argv) {
 
   omp_set_num_threads(4);

@@ -26,7 +26,7 @@ const double *real = ((double *)(&z));
 const double *imag = ((double *)(&z) + 1);
 return (*real * *real + *imag * *imag) < 4.0;
 */
-  return (z.fl64[0] * z.fl64[0] + z.fl64[1] * z.fl64[1]) < 4.0;
+  return (z.fl[0] * z.fl[0] + z.fl[1] * z.fl[1]) < 4.0;
 }
 
 int16_t compute_age(const cplx_d C, const int16_t max_iteration) {
@@ -42,12 +42,15 @@ int16_t compute_age(const cplx_d C, const int16_t max_iteration) {
   return (counter >= max_iteration) ? (-1) : (counter);
 }
 
+bs_float bs_real(cplx_d v) { return *((bs_float *)(&v) + 0); }
+bs_float bs_imag(cplx_d v) { return *((bs_float *)(&v) + 1); }
+
 void compute_frame(mat_age *m, const cplx_d minmin, const cplx_d maxmax,
                    const int16_t max_iterations) {
   // memset(m, 0, sizeof(mat));
 
-  const double row_span = cimag(maxmax) - cimag(minmin);
-  const double col_span = creal(maxmax) - creal(minmin);
+  const double row_span = bs_imag(maxmax) - bs_imag(minmin);
+  const double col_span = bs_real(maxmax) - bs_real(minmin);
 
 #pragma omp parallel for schedule(dynamic)
   for (int r = 0; r < burning_ship_rows; r++) {

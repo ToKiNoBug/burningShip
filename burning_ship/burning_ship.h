@@ -27,8 +27,8 @@ typedef bs_cplx cplx_d;
 
 typedef union {
   cplx_d value;
-  bs_float fl64[2];
-  bs_uint u64[2];
+  bs_float fl[2];
+  bs_uint ui[2];
   uint8_t bytes[sizeof(bs_float) * 2];
 } cplx_union_d;
 
