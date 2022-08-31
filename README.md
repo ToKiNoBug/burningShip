@@ -1,5 +1,11 @@
-# Candidate zooming points:
+# Burning ship fractal
 
+This repo implementes generating, rendering and zooming the burning ship fractal.
+
+## Compiler support
+To zoom about over 1e-14, **float128** is required. Because this repo uses `__float128` and `_Complex128`, which is the compiler-extension of gcc, only gcc and a x64 arch is able to compile this project.
+
+## Candidate zooming points:
 Center in hex can be of bi-precision or quar-precision, and scale in height is the greatest zoom when the image is pixelized(no enough precision)
 
 |       Center       |                           Center in hex                            | Scale in height |
