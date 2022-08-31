@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(burningShip VERSION 0.1.0)
+#project(burningShip VERSION 0.1.0)
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 
 
 
-find_package(zlib REQUIRED)
+find_package(ZLIB REQUIRED)
 find_package(PNG REQUIRED)
 find_package(OpenMP REQUIRED)
 

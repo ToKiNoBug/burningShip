@@ -34,3 +34,4 @@
 .cache/*
 compile_commands.json
 *.mexw64
+CMakeLists.txt.user
