@@ -127,6 +127,11 @@ void zoomer::repaint() {
   ::render(mat, img.scanLine(0), ui->spin_max_iter->value());
 
   delete mat;
+  /*
+    img = img.scaled(ui->image->width(), ui->image->height(),
+                     Qt::AspectRatioMode::IgnoreAspectRatio,
+                     Qt::TransformationMode::FastTransformation);
+                     */
 
   ui->image->setPixmap(QPixmap::fromImage(img));
 
