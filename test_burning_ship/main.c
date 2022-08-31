@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 
   // iterate(C, NULL);
 
-  mat_age *img = malloc(sizeof(mat_age));
+  mat_age *img = malloc((burning_ship_rows * burning_ship_cols));
 
   if (img == NULL) {
     printf("Failed to allocate size");

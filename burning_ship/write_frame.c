@@ -15,7 +15,7 @@ bool write_uncompressed(const mat_age *img, const char *path) {
     return false;
   }
 
-  fwrite(img, 1, sizeof(mat_age), ofile);
+  fwrite(img, 1, (burning_ship_rows * burning_ship_cols), ofile);
 
   return true;
 }
@@ -27,7 +27,7 @@ bool write_compressed(const mat_age *img, const char *path) {
     return false;
   }
 
-  gzfwrite(img, 1, sizeof(mat_age), zFile);
+  gzfwrite(img, 1, (burning_ship_rows * burning_ship_cols), zFile);
 
   gzclose(zFile);
 

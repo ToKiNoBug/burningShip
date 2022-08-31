@@ -5,7 +5,7 @@
 
 #include "burning_ship.h"
 
-constexpr double cols_div_rows = 1920.0 / 1080;
+constexpr double cols_div_rows = double(burning_ship_cols) / burning_ship_rows;
 
 namespace Ui {
 class zoomer;

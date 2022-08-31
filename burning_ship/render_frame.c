@@ -31,6 +31,7 @@ void render(const mat_age *const src, uint8_t *const dest,
 
   const int16_t span_positive = MAX(max_positive - min_positive, 1);
 
+#pragma omp parallel for schedule(static)
   for (int r = 0; r < burning_ship_rows; r++) {
     for (int c = 0; c < burning_ship_cols; c++) {
       int idx = r * burning_ship_rows + c;

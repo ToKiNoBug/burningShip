@@ -3,15 +3,17 @@
 #include <string.h>
 
 void iterate(const cplx_d C, cplx_union_d *z) {
-
-  static const uint64_t mask = ~(1ULL << 63);
+  static const uint8_t mask = 0b0111111;
   // take the abs value to real and imag
   /*
-   *(uint64_t *)(z) &= mask;
-   *((uint64_t *)(z) + 1) &= mask;
+   *(bs_uint *)(z) &= mask;
+   *((bs_uint *)(z) + 1) &= mask;
    */
-  z->u64[0] &= mask;
-  z->u64[1] &= mask;
+  // z->u64[0] &= mask;
+  // z->u64[1] &= mask;
+
+  z->bytes[size_of_bs_float - 1] &= mask;
+  z->bytes[2 * size_of_bs_float - 1] &= mask;
 
   z->value = z->value * z->value + C;
 

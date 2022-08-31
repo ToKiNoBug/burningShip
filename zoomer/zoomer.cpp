@@ -2,7 +2,9 @@
 #include "ui_zoomer.h"
 #include <QByteArray>
 
-using namespace std::complex_literals;
+#include <iostream>
+
+using std::cout, std::endl;
 
 zoomer::zoomer(QWidget *parent) : QWidget(parent), ui(new Ui::zoomer) {
   ui->setupUi(this);
@@ -19,6 +21,8 @@ zoomer::zoomer(QWidget *parent) : QWidget(parent), ui(new Ui::zoomer) {
   connect(ui->image, &scalable_label::zoomed, this, &zoomer::update_scale);
 
   display_range();
+
+  repaint();
 }
 
 zoomer::~zoomer() { delete ui; }
@@ -100,6 +104,28 @@ void zoomer::display_range() const {
 
 void zoomer::repaint() const {
   //
+
+  ::mat_age *const mat = new mat_age;
+
+  if (mat == NULL) {
+    cout << "failed to allocate space for mat" << endl;
+    return;
+  }
+
+  QImage img(burning_ship_cols, burning_ship_rows,
+             QImage::Format::Format_Grayscale8);
+
+  if (img.isNull()) {
+    cout << "Failed to allocate space for image" << endl;
+  }
+
+  ::compute_frame(mat, this->minmin.value, this->maxmax.value, 3000);
+
+  ::render(mat, img.scanLine(0), 3000);
+
+  delete mat;
+
+  ui->image->setPixmap(QPixmap::fromImage(img));
 }
 
 void zoomer::update_scale(const double r_relative_pos,

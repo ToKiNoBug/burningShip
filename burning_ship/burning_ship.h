@@ -9,21 +9,31 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 
+typedef double bs_float;
+typedef uint64_t bs_uint;
+typedef double _Complex bs_cplx;
+
+static const int size_of_bs_float = sizeof(bs_float);
+
+// typedef __float128 bs_float;
+// typedef __uint128_t bs_uint;
+
 typedef struct {
-  double real;
-  double imag;
+  bs_float real;
+  bs_float imag;
 } my_complex;
 
+typedef bs_cplx cplx_d;
+
 typedef union {
-  double _Complex value;
-  double fl64[2];
-  uint64_t u64[2];
+  cplx_d value;
+  bs_float fl64[2];
+  bs_uint u64[2];
+  uint8_t bytes[sizeof(bs_float) * 2];
 } cplx_union_d;
 
-typedef double _Complex cplx_d;
-
-#define burning_ship_rows 1080
-#define burning_ship_cols 1920
+#define burning_ship_rows 480
+#define burning_ship_cols 480
 
 typedef struct {
   int16_t data[burning_ship_rows][burning_ship_cols];
