@@ -17,7 +17,7 @@ void scalable_label::wheelEvent(QWheelEvent *event) {
   const QPointF point = event->position();
 
   // bool is_inverted = event->isInverted();
-  // inverted() and isInverted don't work on windows10
+  // inverted() and isInverted don't work on windows10 Qt6.1.0
   const QPointF angle_delta = event->angleDelta();
 
   bool is_scaling_up;

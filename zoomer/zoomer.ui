@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>504</width>
-    <height>596</height>
+    <height>650</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,6 +23,36 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2" columnstretch="1,1,1,1">
+   <item row="5" column="1" colspan="3">
+    <widget class="QLineEdit" name="show_center_hex">
+     <property name="text">
+      <string notr="true"/>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" colspan="2">
+    <widget class="QLabel" name="label_show_maxmax">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Maxmax : </string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Center in hex : </string>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="0" colspan="2">
     <widget class="QDoubleSpinBox" name="spin_zoom_speed">
      <property name="prefix">
@@ -49,43 +79,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2" colspan="2">
-    <widget class="QLabel" name="label_show_center_dec">
-     <property name="text">
-      <string>Center :</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QLabel" name="label_show_minmin">
-     <property name="text">
-      <string>Minmin : </string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2" colspan="2">
-    <widget class="QSpinBox" name="spin_max_iter">
-     <property name="suffix">
-      <string/>
-     </property>
-     <property name="prefix">
-      <string>max iter : </string>
-     </property>
-     <property name="minimum">
-      <number>50</number>
-     </property>
-     <property name="maximum">
-      <number>65535</number>
-     </property>
-     <property name="singleStep">
-      <number>100</number>
-     </property>
-     <property name="value">
-      <number>3000</number>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="4">
+   <item row="7" column="0" colspan="4">
     <widget class="scalable_label" name="image">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -119,19 +113,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2" colspan="2">
-    <widget class="QLabel" name="label_show_maxmax">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Maxmax : </string>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
@@ -142,23 +123,63 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="3">
-    <widget class="QLineEdit" name="show_scale"/>
-   </item>
-   <item row="5" column="1" colspan="3">
-    <widget class="QLineEdit" name="show_center_hex">
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="label_show_minmin">
      <property name="text">
-      <string notr="true"/>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
+      <string>Minmin : </string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_2">
+   <item row="1" column="2" colspan="2">
+    <widget class="QLabel" name="label_show_center_dec">
      <property name="text">
-      <string>Center in hex : </string>
+      <string>Center :</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="3">
+    <widget class="QLineEdit" name="show_scale"/>
+   </item>
+   <item row="3" column="2" colspan="2">
+    <widget class="QSpinBox" name="spin_max_iter">
+     <property name="suffix">
+      <string/>
+     </property>
+     <property name="prefix">
+      <string>max iter : </string>
+     </property>
+     <property name="minimum">
+      <number>50</number>
+     </property>
+     <property name="maximum">
+      <number>65535</number>
+     </property>
+     <property name="singleStep">
+      <number>100</number>
+     </property>
+     <property name="value">
+      <number>3000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QPushButton" name="btn_repaint">
+     <property name="text">
+      <string>Repaint</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QPushButton" name="btn_revert">
+     <property name="text">
+      <string>Revert scaling</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QPushButton" name="btn_save_image">
+     <property name="text">
+      <string>Save image</string>
      </property>
     </widget>
    </item>

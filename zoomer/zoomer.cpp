@@ -5,6 +5,10 @@
 #include <ctime>
 #include <iostream>
 
+#include <QPushButton>
+
+#include <QFileDialog>
+
 using std::cout, std::endl;
 
 zoomer::zoomer(QWidget *parent) : QWidget(parent), ui(new Ui::zoomer) {
@@ -20,6 +24,9 @@ zoomer::zoomer(QWidget *parent) : QWidget(parent), ui(new Ui::zoomer) {
   connect(ui->image, &scalable_label::moved, this, &zoomer::mouse_move);
 
   connect(ui->image, &scalable_label::zoomed, this, &zoomer::update_scale);
+
+  // void (zoomer::*ptr)() = &zoomer::update_center_and_scale;
+  // connect(ui->btn_repaint, &QPushButton::click, this, ptr);
 
   display_range();
 
@@ -102,6 +109,17 @@ void zoomer::display_range() const {
 void zoomer::repaint() {
   //
 
+  if (!this->lock.try_lock()) {
+    return;
+  }
+
+  if (this->scale_record.empty()) {
+    const bs_float scale = this->maxmax.fl[0] - this->minmin.fl[0];
+
+    const cplx_d center = (this->maxmax.value + this->minmin.value) / 2;
+    this->scale_record.emplace_back(std::make_pair(center, scale));
+  }
+
   this->setWindowTitle("Fractal zoomer (computing, please wait...)");
 
   ::mat_age *const mat = new mat_age;
@@ -137,29 +155,34 @@ void zoomer::repaint() {
   this->setWindowTitle(
       QStringLiteral("Fractal zoomer. Computation finished in ") +
       QString::number(clk * 1000.0 / CLOCKS_PER_SEC) + " ms");
+
+  this->lock.unlock();
 }
 
 void zoomer::update_scale(const double r_relative_pos,
                           const double c_relative_pos,
                           const bool is_zooming_up) {
 
-  const bs_float now_r_span = this->maxmax.fl[1] - this->minmin.fl[1];
-  const bs_float now_c_span = this->maxmax.fl[0] - this->minmin.fl[0];
+  const bs_float prev_r_span = this->maxmax.fl[1] - this->minmin.fl[1];
+  const bs_float prev_c_span = this->maxmax.fl[0] - this->minmin.fl[0];
 
   const bs_float scale_speed = ui->spin_zoom_speed->value();
   const bs_float next_r_span =
-      now_r_span * (is_zooming_up ? (1 / scale_speed) : scale_speed);
+      prev_r_span * (is_zooming_up ? (1 / scale_speed) : scale_speed);
   const bs_float next_c_span = next_r_span * cols_div_rows;
 
-  cplx_union_d new_center = this->minmin;
-  new_center.fl[0] += c_relative_pos * now_c_span;
-  new_center.fl[1] += (1 - r_relative_pos) * now_r_span;
+  cplx_union_d next_center = this->minmin;
+  next_center.fl[0] += c_relative_pos * prev_c_span;
+  next_center.fl[1] += (1 - r_relative_pos) * prev_r_span;
 
-  this->minmin = new_center;
+  this->scale_record.emplace_back(
+      std::make_pair(next_center.value, next_r_span));
+
+  this->minmin = next_center;
   this->minmin.fl[0] -= next_c_span / 2;
   this->minmin.fl[1] -= next_r_span / 2;
 
-  this->maxmax = new_center;
+  this->maxmax = next_center;
   this->maxmax.fl[0] += next_c_span / 2;
   this->maxmax.fl[1] += next_r_span / 2;
 
@@ -167,5 +190,80 @@ void zoomer::update_scale(const double r_relative_pos,
 
   repaint();
 
-  // const cplx_d now_center = (this->maxmax.value + this->minmin.value) / 2;
+  // const cplx_d prev_center = (this->maxmax.value + this->minmin.value) / 2;
+}
+
+void zoomer::update_center_and_scale() {
+  cplx_union_d next_center;
+  bool ok = true;
+  const double scale_by_height = ui->show_scale->text().toDouble(&ok);
+  if (!ok) {
+    return;
+  }
+  QString str = ui->show_center_hex->text();
+  if (!str.startsWith(QStringLiteral("0x"))) {
+    return;
+  }
+
+  str = str.right(str.length() - 2);
+
+  QByteArray data = QByteArray::fromHex(str.toUtf8());
+
+  memcpy(next_center.bytes, data.data(), sizeof(next_center));
+
+  update_center_and_scale(next_center, scale_by_height);
+
+  this->scale_record.emplace_back(
+      std::make_pair(next_center.value, bs_float(scale_by_height)));
+}
+
+void zoomer::update_center_and_scale(const cplx_union_d center,
+                                     const bs_float scale_r) {
+  const bs_float scale_c = scale_r * cols_div_rows;
+
+  this->minmin = center;
+  this->minmin.fl[0] -= scale_c / 2;
+  this->minmin.fl[1] -= scale_r / 2;
+  this->maxmax = center;
+  this->maxmax.fl[0] += scale_c / 2;
+  this->maxmax.fl[1] += scale_r / 2;
+
+  this->display_range();
+
+  this->repaint();
+}
+
+void zoomer::on_btn_revert_clicked() {
+  if (this->scale_record.size() > 1) {
+
+    this->scale_record.pop_back();
+  }
+
+  if (this->scale_record.empty()) {
+    cplx_union_d v;
+    v.fl[0] = 0;
+    v.fl[1] = 0;
+    this->scale_record.emplace_back(std::make_pair(v.value, bs_float(4)));
+  }
+
+  this->update_center_and_scale((cplx_union_d &)this->scale_record.back().first,
+                                this->scale_record.back().second);
+}
+
+void zoomer::on_btn_save_image_clicked() {
+
+  QImage img = ui->image->pixmap().toImage();
+
+  if (img.isNull()) {
+    return;
+  }
+
+  const QString path =
+      QFileDialog::getSaveFileName(this, "Save current preview", "", "*.png");
+
+  if (path.isEmpty()) {
+    return;
+  }
+
+  img.save(path);
 }
