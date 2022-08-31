@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>504</width>
-    <height>542</height>
+    <height>594</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,8 +19,48 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,0">
-   <item row="2" column="0" colspan="2">
+  <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_show_minmin">
+     <property name="text">
+      <string>Minmin : </string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="label_show_scale">
+     <property name="text">
+      <string>Scale by height : </string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QDoubleSpinBox" name="spin_zoom_speed">
+     <property name="prefix">
+      <string>scale per scroll : </string>
+     </property>
+     <property name="minimum">
+      <double>1.050000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>16.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.500000000000000</double>
+     </property>
+     <property name="value">
+      <double>2.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_show_mouse">
+     <property name="text">
+      <string>Mouse : </string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
     <widget class="scalable_label" name="image">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -42,6 +82,23 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_show_center_dec">
+     <property name="text">
+      <string>Center :</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QLineEdit" name="show_center_hex">
+     <property name="text">
+      <string notr="true">Center in hex : </string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="1" colspan="2">
     <widget class="QLabel" name="label_show_maxmax">
      <property name="sizePolicy">
@@ -52,27 +109,6 @@
      </property>
      <property name="text">
       <string>Maxmax : </string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_show_minmin">
-     <property name="text">
-      <string>Minmin : </string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_show_mouse">
-     <property name="text">
-      <string>Mouse : </string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="label_show_scale">
-     <property name="text">
-      <string>Scale by height : </string>
      </property>
     </widget>
    </item>

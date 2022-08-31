@@ -22,11 +22,11 @@ typedef union {
 
 typedef double _Complex cplx_d;
 
-#define rows 1080
-#define cols 1920
+#define burning_ship_rows 1080
+#define burning_ship_cols 1920
 
 typedef struct {
-  int16_t data[rows][cols];
+  int16_t data[burning_ship_rows][burning_ship_cols];
 } mat_age;
 
 void compute_frame(mat_age *, const cplx_d minmin, const cplx_d maxmax,
@@ -35,6 +35,14 @@ void compute_frame(mat_age *, const cplx_d minmin, const cplx_d maxmax,
 bool write_uncompressed(const mat_age *, const char *);
 
 bool write_compressed(const mat_age *, const char *);
+/*
+typedef struct {
+  uint8_t data[burning_ship_rows][burning_ship_cols];
+} image_u16;
+
+*/
+
+void render(const mat_age *const, uint8_t *const, const int16_t max_iterations);
 
 #ifdef __cplusplus
 }

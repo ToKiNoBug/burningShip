@@ -48,13 +48,14 @@ void compute_frame(mat_age *m, const cplx_d minmin, const cplx_d maxmax,
   const double col_span = creal(maxmax) - creal(minmin);
 
 #pragma omp parallel for schedule(dynamic)
-  for (int r = 0; r < rows; r++) {
+  for (int r = 0; r < burning_ship_rows; r++) {
     // printf("%d", omp_get_thread_num());
     // int16_t cache[cache_size];
-    for (int c = 0; c < cols; c++) {
+    for (int c = 0; c < burning_ship_cols; c++) {
 
-      const cplx_d C = minmin + (col_span * (cols - 1 - c)) / (cols - 1) +
-                       (row_span * (r)) / (rows - 1) * 1i;
+      const cplx_d C = minmin + (col_span * (c)) / (burning_ship_cols - 1) +
+                       (row_span * (burning_ship_rows - 1 - r)) /
+                           (burning_ship_rows - 1) * 1i;
 
       // cache[c % cache_size]
       m->data[r][c] = compute_age(C, max_iterations);

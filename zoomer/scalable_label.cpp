@@ -4,7 +4,9 @@
 
 using std::cout, std::endl;
 
-scalable_label::scalable_label(QWidget *parent) : QLabel(parent) {}
+scalable_label::scalable_label(QWidget *parent) : QLabel(parent) {
+  this->setMouseTracking(true);
+}
 
 void scalable_label::wheelEvent(QWheelEvent *event) {
 
@@ -40,10 +42,5 @@ void scalable_label::mouseMoveEvent(QMouseEvent *event) {
 
   emit moved(point.y() / (this->height() - 1), point.x() / (this->width() - 1));
 
-  event->accept();
-}
-
-void scalable_label::mouseReleaseEvent(QMouseEvent *event) {
-  emit repaint();
   event->accept();
 }

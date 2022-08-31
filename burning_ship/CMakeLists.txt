@@ -14,6 +14,6 @@ find_package(OpenMP REQUIRED)
 include_directories(${ZLIB_INCLUDE_DIR})
 include_directories(${PNG_INCLUDE_DIR})
 
-add_library(burning_ship_lib STATIC burning_ship.h compute_frame.c write_frame.c)
+add_library(burning_ship_lib STATIC burning_ship.h compute_frame.c write_frame.c render_frame.c)
 
 target_link_libraries(burning_ship_lib OpenMP::OpenMP_C png z)

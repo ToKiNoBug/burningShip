@@ -13,18 +13,17 @@ class scalable_label : public QLabel {
 public:
   explicit scalable_label(QWidget *parent = nullptr);
 
+  volatile bool is_busy = false;
+
 signals:
   void zoomed(const double r_relative_pos, const double c_relative_pos,
               const bool is_zooming_up);
-  void repaint();
   void moved(const double r_relative_pos, const double c_relative_pos);
 
 protected:
   void wheelEvent(QWheelEvent *event) override;
 
   void mouseMoveEvent(QMouseEvent *event) override;
-
-  void mouseReleaseEvent(QMouseEvent *event) override;
 };
 
 #endif // SCALABLE_LABEL_H
