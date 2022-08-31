@@ -19,12 +19,14 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
 
 set(zoomer_header_files 
  
-    zoomer.h)
+    zoomer.h
+    scalable_label.h)
 
 set(zoomer_source_files 
     
     main.cpp
-    zoomer.cpp)
+    zoomer.cpp
+    scalable_label.cpp)
 
 set(zoomer_ui_files 
     
@@ -43,7 +45,8 @@ endif()
 
 target_link_libraries(zoomer
     PRIVATE 
-    Qt${QT_VERSION_MAJOR}::Widgets)
+    Qt${QT_VERSION_MAJOR}::Widgets
+    burning_ship_lib)
 
 set_target_properties(zoomer PROPERTIES
     WIN32_EXECUTABLE TRUE)

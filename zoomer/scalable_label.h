@@ -1,0 +1,30 @@
+#ifndef SCALABLE_LABEL_H
+#define SCALABLE_LABEL_H
+
+#include <QLabel>
+#include <QObject>
+#include <QWidget>
+
+#include <QEvent>
+#include <QMouseEvent>
+
+class scalable_label : public QLabel {
+  Q_OBJECT
+public:
+  explicit scalable_label(QWidget *parent = nullptr);
+
+signals:
+  void zoomed(const double r_relative_pos, const double c_relative_pos,
+              const bool is_zooming_up);
+  void repaint();
+  void moved(const double r_relative_pos, const double c_relative_pos);
+
+protected:
+  void wheelEvent(QWheelEvent *event) override;
+
+  void mouseMoveEvent(QMouseEvent *event) override;
+
+  void mouseReleaseEvent(QMouseEvent *event) override;
+};
+
+#endif // SCALABLE_LABEL_H

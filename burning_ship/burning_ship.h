@@ -1,8 +1,13 @@
+#ifndef BURNING_SHIP_H
+#define BURNING_SHIP_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif // #ifdef __cplusplus
+
 #include <complex.h>
 #include <stdbool.h>
 #include <stdint.h>
-
-//#include <quadmath.h>
 
 typedef struct {
   double real;
@@ -17,8 +22,6 @@ typedef union {
 
 typedef double _Complex cplx_d;
 
-// typedef double _Complex cplx_d;
-
 #define rows 1080
 #define cols 1920
 
@@ -32,3 +35,9 @@ void compute_frame(mat_age *, const cplx_d minmin, const cplx_d maxmax,
 bool write_uncompressed(const mat_age *, const char *);
 
 bool write_compressed(const mat_age *, const char *);
+
+#ifdef __cplusplus
+}
+#endif // #ifdef __cplusplus
+
+#endif // BURNING_SHIP_H

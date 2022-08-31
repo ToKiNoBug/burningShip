@@ -2,7 +2,7 @@
 #include <omp.h>
 #include <string.h>
 
-inline void iterate(const cplx_d C, cplx_union_d *z) {
+void iterate(const cplx_d C, cplx_union_d *z) {
 
   static const uint64_t mask = ~(1ULL << 63);
   // take the abs value to real and imag

@@ -3,20 +3,21 @@
 
 #include <QWidget>
 
+#include "burning_ship.h"
+
 namespace Ui {
 class zoomer;
 }
 
-class zoomer : public QWidget
-{
-    Q_OBJECT
+class zoomer : public QWidget {
+  Q_OBJECT
 
 public:
-    explicit zoomer(QWidget *parent = nullptr);
-    ~zoomer();
+  explicit zoomer(QWidget *parent = nullptr);
+  ~zoomer();
 
 private:
-    Ui::zoomer *ui;
+  Ui::zoomer *ui;
 };
 
 #endif // ZOOMER_H
