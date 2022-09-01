@@ -6,8 +6,6 @@
 
 //#define BS_FLOAT128
 
-#include <quadmath.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif // #ifdef __cplusplus
@@ -18,6 +16,7 @@ extern "C" {
 
 #ifdef BS_FLOAT128
 
+#include <quadmath.h>
 typedef __float128 bs_float;
 typedef __uint128_t bs_uint;
 typedef __complex128 bs_cplx;
@@ -30,7 +29,7 @@ typedef double _Complex bs_cplx;
 
 #endif
 
-static const int size_of_bs_float = sizeof(bs_float);
+#define size_of_bs_float sizeof(bs_float)
 
 // typedef __float128 bs_float;
 // typedef __uint128_t bs_uint;
@@ -55,6 +54,14 @@ typedef union {
 typedef struct {
   int16_t data[burning_ship_rows][burning_ship_cols];
 } mat_age;
+
+typedef struct {
+  bs_float norm2[burning_ship_rows][burning_ship_cols];
+} norm2_matc1;
+
+typedef struct {
+  cplx_d c3[burning_ship_rows][burning_ship_cols][3];
+} cplx_matc3;
 
 typedef struct {
   bs_cplx minmin;
@@ -89,12 +96,25 @@ void compute_frame_range(mat_age *, bs_range_wind,
 void compute_frame_center(mat_age *, bs_center_wind,
                           const int16_t max_iterations);
 
+void compute_frame_norm2c1_range(mat_age *const, bs_range_wind,
+                                 const int16_t max_iteration,
+                                 norm2_matc1 *const);
+
+void compute_frame_cplxmatc3_range(mat_age *const, bs_range_wind,
+                                   const int16_t max_iteration,
+                                   cplx_matc3 *const);
+
 // here are functions to save a frame
 
+// the first 16 bytes are the rows and cols in size_t
 bool write_uncompressed(const mat_age *, const char *);
 
 // the first 16 bytes are the rows and cols in size_t
 bool write_compressed(const mat_age *, const char *);
+
+bool write_abstract_matrix(const void *const, const uint16_t element_bytes,
+                           const uint64_t rows, const uint64_t cols,
+                           const char *const filename, const bool compress);
 
 // here are functions to render a frame
 

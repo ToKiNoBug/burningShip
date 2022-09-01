@@ -183,6 +183,13 @@
      </property>
     </widget>
    </item>
+   <item row="6" column="3">
+    <widget class="QPushButton" name="btn_save_frame">
+     <property name="text">
+      <string>Save frame</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>

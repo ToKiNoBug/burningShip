@@ -11,7 +11,8 @@
 
 using std::cout, std::endl;
 
-zoomer::zoomer(QWidget *parent) : QWidget(parent), ui(new Ui::zoomer) {
+zoomer::zoomer(QWidget *parent)
+    : QWidget(parent), ui(new Ui::zoomer), mat(new mat_age) {
   ui->setupUi(this);
 
   // this->minmin = -2 - 2j;
@@ -33,7 +34,10 @@ zoomer::zoomer(QWidget *parent) : QWidget(parent), ui(new Ui::zoomer) {
   // repaint();
 }
 
-zoomer::~zoomer() { delete ui; }
+zoomer::~zoomer() {
+  delete ui;
+  delete mat;
+}
 
 void zoomer::mouse_move(const double r_relative_pos,
                         const double c_relative_pos) {
@@ -122,10 +126,8 @@ void zoomer::repaint() {
 
   this->setWindowTitle("Fractal zoomer (computing, please wait...)");
 
-  ::mat_age *const mat = new mat_age;
-
-  if (mat == NULL) {
-    cout << "failed to allocate space for mat" << endl;
+  if (this->mat == NULL) {
+    cout << "failed to allocate space for this->mat" << endl;
     return;
   }
 
@@ -137,13 +139,12 @@ void zoomer::repaint() {
   }
 
   std::clock_t clk = std::clock();
-  ::compute_frame(mat, this->minmin.value, this->maxmax.value,
+  ::compute_frame(this->mat, this->minmin.value, this->maxmax.value,
                   ui->spin_max_iter->value());
   clk = std::clock() - clk;
 
-  ::render(mat, img.scanLine(0), ui->spin_max_iter->value());
+  ::render(this->mat, img.scanLine(0), ui->spin_max_iter->value());
 
-  delete mat;
   /*
     img = img.scaled(ui->image->width(), ui->image->height(),
                      Qt::AspectRatioMode::IgnoreAspectRatio,
@@ -266,4 +267,26 @@ void zoomer::on_btn_save_image_clicked() {
   }
 
   img.save(path);
+}
+
+void zoomer::on_btn_save_frame_clicked() {
+  const QString filename = QFileDialog::getSaveFileName(
+      this, "Save current frame", "", "*.bs_frame;;*.gz");
+
+  if (filename.isEmpty()) {
+    return;
+  }
+
+  if ((!filename.endsWith(QStringLiteral(".gz"))) &&
+      (!filename.endsWith(QStringLiteral(".bs_frame")))) {
+    return;
+  }
+
+  if (filename.endsWith(QStringLiteral(".gz"))) {
+    ::write_compressed(this->mat, filename.toLocal8Bit().data());
+  } else {
+    ::write_uncompressed(this->mat, filename.toLocal8Bit().data());
+  }
+
+  return;
 }

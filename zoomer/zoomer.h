@@ -27,6 +27,8 @@ public:
 private:
   Ui::zoomer *ui;
 
+  mat_age *const mat;
+
   cplx_union_d minmin;
   cplx_union_d maxmax;
 
@@ -55,6 +57,8 @@ private slots:
   void on_btn_revert_clicked();
 
   void on_btn_save_image_clicked();
+
+  void on_btn_save_frame_clicked();
 };
 
 #endif // ZOOMER_H
