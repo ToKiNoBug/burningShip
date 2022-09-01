@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
 
   omp_set_num_threads(4);
 
-  cplx_d C = 0.375 + 0i;
+  cplx_d Center = -0.591827 - 1.05382i;
 
   // iterate(C, NULL);
 

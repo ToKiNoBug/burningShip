@@ -89,3 +89,15 @@ void compute_frame(mat_age *m, const cplx_d minmin, const cplx_d maxmax,
     }
   }
 }
+
+void compute_frame_range(mat_age *mat, bs_range_wind wind,
+                         const int16_t max_iterations) {
+  compute_frame(mat, wind.minmin, wind.maxmax, max_iterations);
+}
+
+void compute_frame_center(mat_age *mat, bs_center_wind wind,
+                          const int16_t max_iterations) {
+  bs_range_wind rw = to_range_wind(wind);
+
+  compute_frame_range(mat, rw, max_iterations);
+}
