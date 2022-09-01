@@ -15,6 +15,11 @@ set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 
+if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+# this macro is added since in C, inline functions may cause `undefined reference` error in debug mode.
+add_compile_definitions(BS_Optimize_on)
+
+endif()
 
 add_subdirectory(burning_ship)
 add_subdirectory(test_burning_ship)

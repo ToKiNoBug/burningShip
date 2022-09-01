@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "inline.h"
+
 bool check_sizes() {
   printf("Checking the size of bs_uint,bs_float and bs_cplx...\n");
   if (sizeof(bs_cplx) != 2 * sizeof(bs_float)) {
@@ -23,10 +25,10 @@ bool check_sizes() {
   return true;
 }
 
-inline bs_float bs_real(cplx_d v) { return *((bs_float *)(&v) + 0); }
-inline bs_float bs_imag(cplx_d v) { return *((bs_float *)(&v) + 1); }
+BS_INLINE bs_float bs_real(cplx_d v) { return *((bs_float *)(&v) + 0); }
+BS_INLINE bs_float bs_imag(cplx_d v) { return *((bs_float *)(&v) + 1); }
 
-inline void iterate(const cplx_d C, cplx_union_d *z) {
+BS_INLINE void iterate(const cplx_d C, cplx_union_d *z) {
   const uint8_t mask = 0b0111111;
 
 #ifndef BS_MANDELBROT
@@ -38,7 +40,7 @@ inline void iterate(const cplx_d C, cplx_union_d *z) {
   // const int size=sizeof(val);
 }
 
-inline bool is_norm_less_than_4(const cplx_union_d z) {
+BS_INLINE bool is_norm_less_than_4(const cplx_union_d z) {
   /*
 const bs_float *real = ((bs_float *)(&z));
 const bs_float *imag = ((bs_float *)(&z) + 1);
@@ -47,7 +49,7 @@ return (*real * *real + *imag * *imag) < 4.0;
   return (z.fl[0] * z.fl[0] + z.fl[1] * z.fl[1]) < 4.0;
 }
 
-inline int16_t compute_age(const cplx_d C, const int16_t max_iteration) {
+BS_INLINE int16_t compute_age(const cplx_d C, const int16_t max_iteration) {
   int16_t counter = 0;
   cplx_union_d z;
   z.value = 0;
@@ -61,8 +63,9 @@ inline int16_t compute_age(const cplx_d C, const int16_t max_iteration) {
 }
 
 // compute the age and return the norm2 of last numbers
-inline int16_t compute_age_norm2c1(const cplx_d C, const int16_t max_iteration,
-                                   bs_float *const final_norm2) {
+BS_INLINE int16_t compute_age_norm2c1(const cplx_d C,
+                                      const int16_t max_iteration,
+                                      bs_float *const final_norm2) {
   int16_t counter = 0;
   cplx_union_d z;
   z.value = 0;
@@ -78,9 +81,9 @@ inline int16_t compute_age_norm2c1(const cplx_d C, const int16_t max_iteration,
 }
 
 // compute the age and return the last 3 numbers
-inline int16_t compute_age_cplxmatc3(const cplx_d C,
-                                     const int16_t max_iteration,
-                                     cplx_d *const dest_c3) {
+BS_INLINE int16_t compute_age_cplxmatc3(const cplx_d C,
+                                        const int16_t max_iteration,
+                                        cplx_d *const dest_c3) {
   int16_t counter = 0;
   cplx_union_d z[4];
   z[0].value = 0;
