@@ -4,6 +4,9 @@
 #include <QLocale>
 #include <QTranslator>
 
+#include <omp.h>
+#include <thread>
+
 int main(int argc, char *argv[]) {
 
   if (!::check_sizes()) {
@@ -11,6 +14,8 @@ int main(int argc, char *argv[]) {
   }
 
   QApplication a(argc, argv);
+
+  omp_set_num_threads(std::thread::hardware_concurrency());
 
   /*
   QTranslator translator;

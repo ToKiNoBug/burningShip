@@ -1,5 +1,4 @@
 #include "burning_ship.h"
-#include <omp.h>
 #include <stdio.h>
 #include <string.h>
 
