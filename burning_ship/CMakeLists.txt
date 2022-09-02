@@ -21,4 +21,4 @@ add_library(burning_ship_lib STATIC
     render_frame.c 
     frame_operations.c)
 
-target_link_libraries(burning_ship_lib OpenMP::OpenMP_C png z quadmath colormaps)
+target_link_libraries(burning_ship_lib OpenMP::OpenMP_C png z quadmath)
