@@ -15,7 +15,7 @@ typedef struct {
 
 typedef uint32_t pixel_u8c4;
 
-const size_t LUT_L = 512;
+static const size_t LUT_L = 512;
 
 pixel_u8c4 interpolate_u8c4(float pos, const float (*const LUT)[3]);
 pixel_u8c3 interpolate_u8c3(float pos, const float (*const LUT)[3]);

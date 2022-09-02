@@ -12,6 +12,8 @@ set(QT_DIR ${CMAKE_PREFIX_PATH}/lib/cmake/Qt6)
 set(QT_QMAKE_EXECUTABLE ${CMAKE_PREFIX_PATH}/bin/qmake.exe)
 
 include_directories(../burning_ship)
+include_directories(../colormaps)
+include_directories(../renders)
 
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
@@ -46,7 +48,9 @@ endif()
 target_link_libraries(zoomer
     PRIVATE 
     Qt${QT_VERSION_MAJOR}::Widgets
-    burning_ship_lib)
+    burning_ship_lib 
+    burning_ship_render 
+    )
 
 set_target_properties(zoomer PROPERTIES
     WIN32_EXECUTABLE TRUE)

@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "burning_ship.h"
+#include "renders.h"
 
 #include <mutex>
 
@@ -28,6 +29,9 @@ private:
   Ui::zoomer *ui;
 
   mat_age *const mat;
+  norm2_matc1 *const norm2;
+
+  mat_age_f32 *const mat_f32;
 
   cplx_union_d minmin;
   cplx_union_d maxmax;

@@ -12,7 +12,8 @@
 using std::cout, std::endl;
 
 zoomer::zoomer(QWidget *parent)
-    : QWidget(parent), ui(new Ui::zoomer), mat(new mat_age) {
+    : QWidget(parent), ui(new Ui::zoomer), mat(new mat_age),
+      mat_f32(new mat_age_f32), norm2(new norm2_matc1) {
   ui->setupUi(this);
 
   // this->minmin = -2 - 2j;
@@ -37,6 +38,8 @@ zoomer::zoomer(QWidget *parent)
 zoomer::~zoomer() {
   delete ui;
   delete mat;
+  delete mat_f32;
+  delete norm2;
 }
 
 void zoomer::mouse_move(const double r_relative_pos,
@@ -132,7 +135,7 @@ void zoomer::repaint() {
   }
 
   QImage img(burning_ship_cols, burning_ship_rows,
-             QImage::Format::Format_Grayscale8);
+             QImage::Format::Format_RGB888);
 
   if (img.isNull()) {
     cout << "Failed to allocate space for image" << endl;
@@ -143,7 +146,14 @@ void zoomer::repaint() {
                   ui->spin_max_iter->value());
   clk = std::clock() - clk;
 
-  ::render_u8c1(this->mat, img.scanLine(0), ui->spin_max_iter->value());
+  //::render_u8c1(this->mat, img.scanLine(0), ui->spin_max_iter->value());
+  smooth_by_norm2(this->mat, this->norm2, this->mat_f32);
+  bool ok = coloring_by_f32_u8c3_more(this->mat, this->mat_f32, img.scanLine(0),
+                                      NAN, NAN);
+
+  if (!ok) {
+    exit(1);
+  }
 
   /*
     img = img.scaled(ui->image->width(), ui->image->height(),

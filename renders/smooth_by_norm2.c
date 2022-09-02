@@ -1,10 +1,11 @@
 #include "renders.h"
 
+#include <colors.h>
+
 #include <math.h>
 
-void render_smooth_by_norm2(const mat_age *const age,
-                            const norm2_matc1 *const norm2,
-                            mat_age_f32 *const dest) {
+void smooth_by_norm2(const mat_age *const age, const norm2_matc1 *const norm2,
+                     mat_age_f32 *const dest) {
   if (age == NULL || norm2 == NULL || dest == NULL)
     return;
 #pragma omp parallel for schedule(static)

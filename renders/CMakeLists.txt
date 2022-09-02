@@ -15,6 +15,7 @@ add_library(burning_ship_render
     STATIC 
     
     renders.h 
-    smooth_by_norm2.c)
+    smooth_by_norm2.c
+    coloring_by_f32.c)
 
 target_link_libraries(burning_ship_render PRIVATE OpenMP::OpenMP_C burning_ship_lib colormaps)
