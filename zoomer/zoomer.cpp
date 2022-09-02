@@ -143,7 +143,7 @@ void zoomer::repaint() {
                   ui->spin_max_iter->value());
   clk = std::clock() - clk;
 
-  ::render(this->mat, img.scanLine(0), ui->spin_max_iter->value());
+  ::render_u8c1(this->mat, img.scanLine(0), ui->spin_max_iter->value());
 
   /*
     img = img.scaled(ui->image->width(), ui->image->height(),

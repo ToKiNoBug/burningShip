@@ -21,7 +21,7 @@ add_compile_definitions(BS_Optimize_on)
 
 endif()
 
+add_subdirectory(colormaps)
 add_subdirectory(burning_ship)
 add_subdirectory(test_burning_ship)
 add_subdirectory(zoomer)
-add_subdirectory(colormaps)

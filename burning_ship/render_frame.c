@@ -5,8 +5,8 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-void render(const mat_age *const src, uint8_t *const dest,
-            const int16_t max_iterations) {
+void render_u8c1(const mat_age *const src, uint8_t *const dest,
+                 const int16_t max_iterations) {
 
   static const uint8_t color_of_negative_1 = 0;
   static const uint8_t color_min = 31;
