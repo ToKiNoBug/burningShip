@@ -8,7 +8,7 @@ typedef struct {
   uint8_t B;
 } pixel;
 
-const size_t LUT_L = 2048;
+const size_t LUT_L = 512;
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,24 +35,28 @@ extern const float (*const src_winter)[3];
 #endif
 
 #ifdef __cplusplus
+#include <array>
 #include <vector>
+
 namespace color_source {
-extern const std::vector<float[3]> src_autumn;
-extern const std::vector<float[3]> src_bone;
-extern const std::vector<float[3]> src_color_cube;
-extern const std::vector<float[3]> src_cool;
-extern const std::vector<float[3]> src_copper;
-extern const std::vector<float[3]> src_flag;
-extern const std::vector<float[3]> src_gray;
-extern const std::vector<float[3]> src_hot;
-extern const std::vector<float[3]> src_hsv;
-extern const std::vector<float[3]> src_jet;
-extern const std::vector<float[3]> src_lines;
-extern const std::vector<float[3]> src_pink;
-extern const std::vector<float[3]> src_prism;
-extern const std::vector<float[3]> src_spring;
-extern const std::vector<float[3]> src_summer;
-extern const std::vector<float[3]> src_winter;
+
+extern const std::vector<std::array<float, 3>> src_autumn;
+extern const std::vector<std::array<float, 3>> src_bone;
+extern const std::vector<std::array<float, 3>> src_color_cube;
+extern const std::vector<std::array<float, 3>> src_cool;
+extern const std::vector<std::array<float, 3>> src_copper;
+extern const std::vector<std::array<float, 3>> src_flag;
+extern const std::vector<std::array<float, 3>> src_gray;
+extern const std::vector<std::array<float, 3>> src_hot;
+extern const std::vector<std::array<float, 3>> src_hsv;
+extern const std::vector<std::array<float, 3>> src_jet;
+extern const std::vector<std::array<float, 3>> src_lines;
+extern const std::vector<std::array<float, 3>> src_pink;
+extern const std::vector<std::array<float, 3>> src_prism;
+extern const std::vector<std::array<float, 3>> src_spring;
+extern const std::vector<std::array<float, 3>> src_summer;
+extern const std::vector<std::array<float, 3>> src_winter;
+
 } // namespace color_source
 #endif
 
