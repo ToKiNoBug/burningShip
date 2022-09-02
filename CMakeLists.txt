@@ -23,5 +23,6 @@ endif()
 
 add_subdirectory(colormaps)
 add_subdirectory(burning_ship)
+add_subdirectory(renders)
 add_subdirectory(test_burning_ship)
 add_subdirectory(zoomer)
