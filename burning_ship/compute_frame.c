@@ -51,7 +51,7 @@ return (*real * *real + *imag * *imag) < 4.0;
 BS_INLINE int16_t compute_age(const cplx_d C, const int16_t max_iteration) {
   int16_t counter = 0;
   cplx_union_d z;
-  z.value = 0;
+  z.value = C;
 
   while (is_norm_less_than_4(z) && counter <= max_iteration) {
     iterate(C, &z);
@@ -67,7 +67,7 @@ BS_INLINE int16_t compute_age_norm2c1(const cplx_d C,
                                       bs_float *const final_norm2) {
   int16_t counter = 0;
   cplx_union_d z;
-  z.value = 0;
+  z.value = C;
 
   while (is_norm_less_than_4(z) && counter <= max_iteration) {
     iterate(C, &z);
@@ -85,7 +85,7 @@ BS_INLINE int16_t compute_age_cplxmatc3(const cplx_d C,
                                         cplx_d *const dest_c3) {
   int16_t counter = 0;
   cplx_union_d z[4];
-  z[0].value = 0;
+  z[0].value = C;
 
   while (is_norm_less_than_4(z[counter & 0b11]) && counter <= max_iteration) {
     z[(counter + 1) & 0b11] = z[counter & 0b11];
