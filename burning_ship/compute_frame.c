@@ -199,3 +199,15 @@ void compute_frame_cplxmatc3_range(mat_age *const m, bs_range_wind range,
     }
   }
 }
+
+void compute_frame_norm2c1_center(mat_age *const mat, bs_center_wind cw,
+                                  const int16_t max_iteration,
+                                  norm2_matc1 *const norm2) {
+  compute_frame_norm2c1_range(mat, to_range_wind(cw), max_iteration, norm2);
+}
+
+void compute_frame_cplxmatc3_center(mat_age *const m, bs_center_wind cw,
+                                    const int16_t max_iteration,
+                                    cplx_matc3 *const cplx_c3) {
+  compute_frame_cplxmatc3_range(m, to_range_wind(cw), max_iteration, cplx_c3);
+}

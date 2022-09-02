@@ -4,48 +4,15 @@
 #include <zlib.h>
 
 bool write_uncompressed(const mat_age *img, const char *path) {
-
-  if (strlen(path) <= 0)
-    return false;
-
-  FILE *ofile = fopen(path, "wb");
-
-  if (ofile == NULL) {
-
-    return false;
-  }
-  const uint64_t rows = burning_ship_rows;
-  const uint64_t cols = burning_ship_cols;
-
-  fwrite(&rows, sizeof(uint64_t), 1, ofile);
-  fwrite(&cols, sizeof(uint64_t), 1, ofile);
-
-  fwrite(img, sizeof(int16_t), (burning_ship_rows * burning_ship_cols), ofile);
-
-  fclose(ofile);
-
-  return true;
+  return write_abstract_matrix(&img->data[0][0], sizeof(int16_t),
+                               burning_ship_rows, burning_ship_cols, path,
+                               false);
 }
 
 bool write_compressed(const mat_age *img, const char *path) {
-  gzFile zFile = gzopen(path, "wb");
-
-  if (zFile == NULL) {
-    return false;
-  }
-
-  const uint64_t rows = burning_ship_rows;
-  const uint64_t cols = burning_ship_cols;
-
-  gzfwrite(&rows, sizeof(uint64_t), 1, zFile);
-  gzfwrite(&cols, sizeof(uint64_t), 1, zFile);
-
-  gzfwrite(img, 1, (burning_ship_rows * burning_ship_cols) * sizeof(int16_t),
-           zFile);
-
-  gzclose(zFile);
-
-  return true;
+  return write_abstract_matrix(&img->data[0][0], sizeof(int16_t),
+                               burning_ship_rows, burning_ship_cols, path,
+                               true);
 }
 
 bool write_abstract_matrix(const void *const data, const uint16_t element_bytes,
@@ -72,12 +39,17 @@ bool write_abstract_matrix(const void *const data, const uint16_t element_bytes,
     return false;
   }
 
+  const int8_t float_bytes = sizeof(bs_float);
+
   if (compress) {
     gzFile zfile = gzopen(filename, "wb");
     if (zfile == NULL) {
       printf("write_abstract_matrix failed : %s\n", "zfile == NULL");
       return false;
     }
+
+    gzfwrite(&float_bytes, sizeof(int8_t), 1, zfile);
+
     gzfwrite(&rows, sizeof(uint64_t), 1, zfile);
     gzfwrite(&cols, sizeof(uint64_t), 1, zfile);
 
@@ -92,6 +64,7 @@ bool write_abstract_matrix(const void *const data, const uint16_t element_bytes,
       return false;
     }
 
+    fwrite(&float_bytes, sizeof(int8_t), 1, file);
     fwrite(&rows, sizeof(uint64_t), 1, file);
     fwrite(&cols, sizeof(uint64_t), 1, file);
     fwrite(data, element_bytes, rows * cols, file);

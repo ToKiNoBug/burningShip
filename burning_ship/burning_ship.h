@@ -48,8 +48,8 @@ typedef union {
   uint8_t bytes[sizeof(bs_float) * 2];
 } cplx_union_d;
 
-#define burning_ship_rows 480
-#define burning_ship_cols 480
+#define burning_ship_rows 1080
+#define burning_ship_cols 1920
 
 typedef struct {
   int16_t data[burning_ship_rows][burning_ship_cols];
@@ -100,9 +100,17 @@ void compute_frame_norm2c1_range(mat_age *const, bs_range_wind,
                                  const int16_t max_iteration,
                                  norm2_matc1 *const);
 
+void compute_frame_norm2c1_center(mat_age *const, bs_center_wind,
+                                  const int16_t max_iteration,
+                                  norm2_matc1 *const);
+
 void compute_frame_cplxmatc3_range(mat_age *const, bs_range_wind,
                                    const int16_t max_iteration,
                                    cplx_matc3 *const);
+
+void compute_frame_cplxmatc3_center(mat_age *const, bs_center_wind,
+                                    const int16_t max_iteration,
+                                    cplx_matc3 *const);
 
 // here are functions to save a frame
 
