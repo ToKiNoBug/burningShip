@@ -1,10 +1,7 @@
 #include "color_sources.h"
 
-const float ptr[] = {1.0f, 2.0f};
 
-namespace color_source {
-
-const std::vector<std::array<float, 3>> src_autumn = {
+const float src_autumn[][3] = {
     {1.0f, 0.0f, 0.0f},
     {1.0f, 0.001956947147846221923828125f, 0.0f},
     {1.0f, 0.00391389429569244384765625f, 0.0f},
@@ -518,7 +515,7 @@ const std::vector<std::array<float, 3>> src_autumn = {
     {1.0f, 0.998043060302734375f, 0.0f},
     {1.0f, 1.0f, 0.0f},
 };
-const std::vector<std::array<float, 3>> src_bone = {
+const float src_bone[][3] = {
     {0.0f, 0.0f, 0.0006510416860692203044891357421875f},
     {0.001712328754365444183349609375f, 0.001712328754365444183349609375f,
      0.00301441201008856296539306640625f},
@@ -1527,7 +1524,7 @@ const std::vector<std::array<float, 3>> src_bone = {
      0.998287677764892578125f},
     {1.0f, 1.0f, 1.0f},
 };
-const std::vector<std::array<float, 3>> src_color_cube = {
+const float src_color_cube[][3] = {
     {0.16666667163372039794921875f, 0.16666667163372039794921875f, 0.0f},
     {0.16666667163372039794921875f, 0.3333333432674407958984375f, 0.0f},
     {0.16666667163372039794921875f, 0.5f, 0.0f},
@@ -2148,7 +2145,7 @@ const std::vector<std::array<float, 3>> src_color_cube = {
      0.979591846466064453125f},
     {1.0f, 1.0f, 1.0f},
 };
-const std::vector<std::array<float, 3>> src_cool = {
+const float src_cool[][3] = {
     {0.0f, 1.0f, 1.0f},
     {0.001956947147846221923828125f, 0.998043060302734375f, 1.0f},
     {0.00391389429569244384765625f, 0.99608612060546875f, 1.0f},
@@ -2662,7 +2659,7 @@ const std::vector<std::array<float, 3>> src_cool = {
     {0.998043060302734375f, 0.001956947147846221923828125f, 1.0f},
     {1.0f, 0.0f, 1.0f},
 };
-const std::vector<std::array<float, 3>> src_copper = {
+const float src_copper[][3] = {
     {0.0f, 0.0f, 0.0f},
     {0.00244618393480777740478515625f, 0.00152876717038452625274658203125f,
      0.000973581220023334026336669921875f},
@@ -3584,7 +3581,7 @@ const std::vector<std::array<float, 3>> src_copper = {
     {1.0f, 0.779671251773834228515625f, 0.496526420116424560546875f},
     {1.0f, 0.781199991703033447265625f, 0.497500002384185791015625f},
 };
-const std::vector<std::array<float, 3>> src_flag = {
+const float src_flag[][3] = {
     {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 1.0f},
     {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f},
     {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f},
@@ -3757,7 +3754,7 @@ const std::vector<std::array<float, 3>> src_flag = {
     {0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f},
     {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 0.0f},
 };
-const std::vector<std::array<float, 3>> src_gray = {
+const float src_gray[][3] = {
     {0.0f, 0.0f, 0.0f},
     {0.001956947147846221923828125f, 0.001956947147846221923828125f,
      0.001956947147846221923828125f},
@@ -4761,7 +4758,7 @@ const std::vector<std::array<float, 3>> src_gray = {
     {0.998043060302734375f, 0.998043060302734375f, 0.998043060302734375f},
     {1.0f, 1.0f, 1.0f},
 };
-const std::vector<std::array<float, 3>> src_hot = {
+const float src_hot[][3] = {
     {0.0052083334885537624359130859375f, 0.0f, 0.0f},
     {0.010416666977107524871826171875f, 0.0f, 0.0f},
     {0.015625f, 0.0f, 0.0f},
@@ -5275,7 +5272,7 @@ const std::vector<std::array<float, 3>> src_hot = {
     {1.0f, 1.0f, 0.9921875f},
     {1.0f, 1.0f, 1.0f},
 };
-const std::vector<std::array<float, 3>> src_hsv = {
+const float src_hsv[][3] = {
     {1.0f, 0.0f, 0.0f},       {1.0f, 0.01171875f, 0.0f},
     {1.0f, 0.0234375f, 0.0f}, {1.0f, 0.03515625f, 0.0f},
     {1.0f, 0.046875f, 0.0f},  {1.0f, 0.05859375f, 0.0f},
@@ -5533,7 +5530,7 @@ const std::vector<std::array<float, 3>> src_hsv = {
     {1.0f, 0.0f, 0.046875f},  {1.0f, 0.0f, 0.03515625f},
     {1.0f, 0.0f, 0.0234375f}, {1.0f, 0.0f, 0.01171875f},
 };
-const std::vector<std::array<float, 3>> src_jet = {
+const float src_jet[][3] = {
     {0.0f, 0.0f, 0.5078125f},       {0.0f, 0.0f, 0.515625f},
     {0.0f, 0.0f, 0.5234375f},       {0.0f, 0.0f, 0.53125f},
     {0.0f, 0.0f, 0.5390625f},       {0.0f, 0.0f, 0.546875f},
@@ -5791,7 +5788,7 @@ const std::vector<std::array<float, 3>> src_jet = {
     {0.5234375f, 0.0f, 0.0f},       {0.515625f, 0.0f, 0.0f},
     {0.5078125f, 0.0f, 0.0f},       {0.5f, 0.0f, 0.0f},
 };
-const std::vector<std::array<float, 3>> src_lines = {
+const float src_lines[][3] = {
     {0.0f, 0.4469999969005584716796875f, 0.740999996662139892578125f},
     {0.85000002384185791015625f, 0.324999988079071044921875f,
      0.097999997437000274658203125f},
@@ -6670,7 +6667,7 @@ const std::vector<std::array<float, 3>> src_lines = {
      0.18400000035762786865234375f},
     {0.0f, 0.4469999969005584716796875f, 0.740999996662139892578125f},
 };
-const std::vector<std::array<float, 3>> src_pink = {
+const float src_pink[][3] = {
     {0.0416666679084300994873046875f, 0.0f, 0.0f},
     {0.06911478936672210693359375f, 0.0361196808516979217529296875f,
      0.0361196808516979217529296875f},
@@ -7690,7 +7687,7 @@ const std::vector<std::array<float, 3>> src_pink = {
      0.998043715953826904296875f},
     {1.0f, 1.0f, 1.0f},
 };
-const std::vector<std::array<float, 3>> src_prism = {
+const float src_prism[][3] = {
     {1.0f, 0.0f, 0.0f}, {1.0f, 0.5f, 0.0f},
     {1.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f},
     {0.0f, 0.0f, 1.0f}, {0.666666686534881591796875f, 0.0f, 1.0f},
@@ -7948,7 +7945,7 @@ const std::vector<std::array<float, 3>> src_prism = {
     {0.0f, 0.0f, 1.0f}, {0.666666686534881591796875f, 0.0f, 1.0f},
     {1.0f, 0.0f, 0.0f}, {1.0f, 0.5f, 0.0f},
 };
-const std::vector<std::array<float, 3>> src_spring = {
+const float src_spring[][3] = {
     {1.0f, 0.0f, 1.0f},
     {1.0f, 0.001956947147846221923828125f, 0.998043060302734375f},
     {1.0f, 0.00391389429569244384765625f, 0.99608612060546875f},
@@ -8462,7 +8459,7 @@ const std::vector<std::array<float, 3>> src_spring = {
     {1.0f, 0.998043060302734375f, 0.001956947147846221923828125f},
     {1.0f, 1.0f, 0.0f},
 };
-const std::vector<std::array<float, 3>> src_summer = {
+const float src_summer[][3] = {
     {0.0f, 0.5f, 0.4000000059604644775390625f},
     {0.001956947147846221923828125f, 0.5009784698486328125f,
      0.4000000059604644775390625f},
@@ -9485,7 +9482,7 @@ const std::vector<std::array<float, 3>> src_summer = {
      0.4000000059604644775390625f},
     {1.0f, 1.0f, 0.4000000059604644775390625f},
 };
-const std::vector<std::array<float, 3>> src_winter = {
+const float src_winter[][3] = {
     {0.0f, 0.0f, 1.0f},
     {0.0f, 0.001956947147846221923828125f, 0.9990215301513671875f},
     {0.0f, 0.00391389429569244384765625f, 0.998043060302734375f},
@@ -9999,52 +9996,3 @@ const std::vector<std::array<float, 3>> src_winter = {
     {0.0f, 0.998043060302734375f, 0.5009784698486328125f},
     {0.0f, 1.0f, 0.5f},
 };
-} // namespace color_source
-
-const float (*const src_autumn)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_autumn.data());
-
-const float (*const src_bone)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_bone.data());
-
-const float (*const src_color_cube)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_color_cube.data());
-
-const float (*const src_cool)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_cool.data());
-
-const float (*const src_copper)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_copper.data());
-
-const float (*const src_flag)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_flag.data());
-
-const float (*const src_gray)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_gray.data());
-
-const float (*const src_hot)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_hot.data());
-
-const float (*const src_hsv)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_hsv.data());
-
-const float (*const src_jet)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_jet.data());
-
-const float (*const src_lines)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_lines.data());
-
-const float (*const src_pink)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_pink.data());
-
-const float (*const src_prism)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_prism.data());
-
-const float (*const src_spring)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_spring.data());
-
-const float (*const src_summer)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_summer.data());
-
-const float (*const src_winter)[3] =
-    reinterpret_cast<const float (*)[3]>(color_source::src_winter.data());

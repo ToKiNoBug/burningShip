@@ -9,4 +9,4 @@ add_library(colormaps
     colors.h 
     colors.c
     color_sources.h 
-    color_sources.cpp)
+    color_sources.c)
