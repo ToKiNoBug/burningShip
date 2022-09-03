@@ -6,13 +6,13 @@ set(CMAKE_CXX_STANDARD 17)
 
 
 
-find_package(ZLIB REQUIRED)
-find_package(PNG REQUIRED)
+find_package(ZLIB 1.2.11 REQUIRED)
+#find_package(PNG REQUIRED)
 find_package(OpenMP REQUIRED)
 
 
 include_directories(${ZLIB_INCLUDE_DIR})
-include_directories(${PNG_INCLUDE_DIR})
+#include_directories(${PNG_INCLUDE_DIR})
 
 add_library(burning_ship_lib STATIC 
     burning_ship.h 
@@ -21,4 +21,4 @@ add_library(burning_ship_lib STATIC
     render_frame.c 
     frame_operations.c)
 
-target_link_libraries(burning_ship_lib OpenMP::OpenMP_C png z quadmath)
+target_link_libraries(burning_ship_lib OpenMP::OpenMP_C z quadmath)

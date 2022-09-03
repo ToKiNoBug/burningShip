@@ -10,12 +10,28 @@ include_directories(../colormaps)
 
 
 find_package(OpenMP REQUIRED)
+find_package(PNG REQUIRED)
+find_package(ZLIB 1.2.11 REQUIRED)
+
+
+include_directories(${ZLIB_INCLUDE_DIR})
+include_directories(${PNG_INCLUDE_DIR})
+
 
 add_library(burning_ship_render 
     STATIC 
     
     renders.h 
     smooth_by_norm2.c
-    coloring_by_f32.c)
+    coloring_by_f32.c
+    write_png.c)
 
-target_link_libraries(burning_ship_render PRIVATE OpenMP::OpenMP_C burning_ship_lib colormaps)
+target_link_libraries(burning_ship_render 
+    PRIVATE 
+    
+    OpenMP::OpenMP_C 
+    z
+    png
+    
+    burning_ship_lib 
+    colormaps)
