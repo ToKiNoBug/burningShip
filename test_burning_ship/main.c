@@ -1,5 +1,7 @@
 #include "burning_ship.h"
 
+#include "renders.h"
+
 #include <stdio.h>
 
 #include <time.h>
@@ -29,6 +31,12 @@ int main(int argc, char **argv) {
     printf("Failed to allocate size for norm2_mat\n");
     return 1;
   }
+  mat_age_f32 *const img_f32 = malloc(sizeof(mat_age_f32));
+
+  if (img_f32 == NULL) {
+    printf("Failed to allocate memory for img_f32\n");
+    return 1;
+  }
 
   printf("Start computation\n");
 
@@ -48,16 +56,21 @@ int main(int argc, char **argv) {
 
   printf("Finished computation in %lu miliseconds\n", clk);
 
+  smooth_by_norm2(img, norm2_mat, img_f32);
+
   write_compressed(img, "data.bs_frame.gz");
 
   write_abstract_matrix(&norm2_mat->norm2[0][0], sizeof(bs_float),
                         burning_ship_rows, burning_ship_cols,
                         "norm.bs_norm2.gz", true);
+  write_abstract_matrix(&img_f32->data[0][0], sizeof(float), burning_ship_rows,
+                        burning_ship_cols, "smooth.unknown", false);
 
   printf("finished writting");
 
   free(img);
   free(norm2_mat);
+  free(img_f32);
 
   return 0;
 }

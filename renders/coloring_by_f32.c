@@ -12,6 +12,7 @@ bool coloring_by_f32_u8c3(const mat_age *const age,
   }
 
   pixel_u8c3 *const dest = dest_u8c3;
+
 #pragma omp parallel for schedule(static)
   for (int r = 0; r < burning_ship_rows; r++) {
     for (int c = 0; c < burning_ship_cols; c++) {
@@ -90,6 +91,41 @@ bool coloring_by_f32_u8c3_more(const mat_age *const age,
       } else {
 
         dest[idx] = copper_u8c3(pos);
+      }
+    }
+  }
+
+  return true;
+}
+
+bool coloring_by_f32_u8c1(const mat_age *const age,
+                          const mat_age_f32 *const smooth,
+                          void *const dest_u8c1) {
+  if (age == NULL || smooth == NULL || dest_u8c1 == NULL) {
+    return false;
+  }
+
+  uint8_t *const dest = dest_u8c1;
+
+  const int16_t colormin = 32;
+  const int16_t colormax = 255;
+
+#pragma omp parallel for schedule(static)
+  for (int r = 0; r < burning_ship_rows; r++) {
+    for (int c = 0; c < burning_ship_cols; c++) {
+      const int idx = r * burning_ship_cols + c;
+
+      // const float temp = fminf(1.0f, fmaxf(0.0f, smooth->data[r][c]));
+      const float temp = fminf(1.0f, smooth->data[r][c]);
+      if (age->data[r][c] < 0) {
+        dest[idx] = 0;
+      } else {
+        const int16_t val = (colormax - colormin) * temp + colormin;
+
+        if (val > colormax || val < colormin)
+          exit(1);
+
+        dest[idx] = val;
       }
     }
   }

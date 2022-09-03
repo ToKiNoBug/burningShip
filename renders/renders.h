@@ -17,6 +17,11 @@ void smooth_by_norm2(const mat_age *const age, const norm2_matc1 *const norm2,
                      mat_age_f32 *const dest);
 
 // smooth should be in range [0,1]
+bool coloring_by_f32_u8c1(const mat_age *const age,
+                          const mat_age_f32 *const smooth,
+                          void *const dest_u8c1);
+
+// smooth should be in range [0,1]
 bool coloring_by_f32_u8c3(const mat_age *const age,
                           const mat_age_f32 *const smooth,
                           void *const dest_u8c3);

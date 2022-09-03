@@ -61,7 +61,7 @@ pixel_u8c3 interpolate_u8c3(float pos, const float (*const LUT)[3]) {
 #define BS_make_function_implementation(channel_num, srcname)                  \
   pixel_u8c##channel_num srcname##_u8c##channel_num(const float pos) {         \
     return interpolate_u8c##channel_num(pos, src_##srcname);                   \
-  }
+  };
 
 #define BS_make_function_impl_c3c4(srcname)                                    \
   BS_make_function_implementation(3, srcname)                                  \

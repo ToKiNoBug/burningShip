@@ -135,7 +135,7 @@ void zoomer::repaint() {
   }
 
   QImage img(burning_ship_cols, burning_ship_rows,
-             QImage::Format::Format_RGB888);
+             QImage::Format::Format_Grayscale8);
 
   if (img.isNull()) {
     cout << "Failed to allocate space for image" << endl;
@@ -146,10 +146,13 @@ void zoomer::repaint() {
                   ui->spin_max_iter->value());
   clk = std::clock() - clk;
 
-  //::render_u8c1(this->mat, img.scanLine(0), ui->spin_max_iter->value());
-  smooth_by_norm2(this->mat, this->norm2, this->mat_f32);
+  ::render_u8c1(this->mat, img.scanLine(0), ui->spin_max_iter->value());
+  //::smooth_by_norm2(this->mat, this->norm2, this->mat_f32);
+  /*
   bool ok = coloring_by_f32_u8c3_more(this->mat, this->mat_f32, img.scanLine(0),
-                                      NAN, NAN);
+                                      NAN, NAN);*/
+  bool ok = true;
+  //::coloring_by_f32_u8c1(this->mat, this->mat_f32, img.bits());
 
   if (!ok) {
     exit(1);
