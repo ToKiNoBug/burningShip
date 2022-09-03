@@ -4,6 +4,8 @@
 
 #include <math.h>
 
+#include <stdio.h>
+
 void smooth_by_norm2(const mat_age *const age, const norm2_matc1 *const norm2,
                      mat_age_f32 *const dest) {
   if (age == NULL || norm2 == NULL || dest == NULL)
@@ -19,6 +21,7 @@ void smooth_by_norm2(const mat_age *const age, const norm2_matc1 *const norm2,
       if (age->data[r][c] >= 0) {
         const float log2_norm_z = log2f(norm2->norm2[r][c]) / 2;
         const float log2_log2_norm_z = log2f(fabsf(log2_norm_z));
+
         dest->data[r][c] = log2_log2_norm_z * inv_log2_log2_6;
       } else {
         dest->data[r][c] = sqrtf(norm2->norm2[r][c] / 4);

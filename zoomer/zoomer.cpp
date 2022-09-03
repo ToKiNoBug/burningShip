@@ -1,9 +1,12 @@
 #include "zoomer.h"
 #include "ui_zoomer.h"
 #include <QByteArray>
+#include <burning_ship.h>
 
 #include <ctime>
 #include <iostream>
+
+#include <QWidget>
 
 #include <QPushButton>
 
@@ -135,28 +138,31 @@ void zoomer::repaint() {
   }
 
   QImage img(burning_ship_cols, burning_ship_rows,
-             QImage::Format::Format_Grayscale8);
+             QImage::Format::Format_RGB888);
 
   if (img.isNull()) {
     cout << "Failed to allocate space for image" << endl;
   }
 
+  ::bs_range_wind rwind;
+  rwind.minmin = this->minmin.value;
+  rwind.maxmax = this->maxmax.value;
+
   std::clock_t clk = std::clock();
+  /*
   ::compute_frame(this->mat, this->minmin.value, this->maxmax.value,
                   ui->spin_max_iter->value());
+                  */
+  ::compute_frame_norm2c1_range(this->mat, rwind, ui->spin_max_iter->value(),
+                                this->norm2);
   clk = std::clock() - clk;
 
-  ::render_u8c1(this->mat, img.scanLine(0), ui->spin_max_iter->value());
-  //::smooth_by_norm2(this->mat, this->norm2, this->mat_f32);
+  //::render_u8c1(this->mat, img.scanLine(0), ui->spin_max_iter->value());
+  ::smooth_by_norm2(this->mat, this->norm2, this->mat_f32);
   /*
   bool ok = coloring_by_f32_u8c3_more(this->mat, this->mat_f32, img.scanLine(0),
                                       NAN, NAN);*/
-  bool ok = true;
-  //::coloring_by_f32_u8c1(this->mat, this->mat_f32, img.bits());
-
-  if (!ok) {
-    exit(1);
-  }
+  ::coloring_by_f32_u8c3(this->mat, this->mat_f32, img.bits());
 
   /*
     img = img.scaled(ui->image->width(), ui->image->height(),

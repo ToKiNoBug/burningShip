@@ -3,8 +3,8 @@
 
 #include <QWidget>
 
-#include "burning_ship.h"
-#include "renders.h"
+#include <burning_ship.h>
+#include <renders.h>
 
 #include <mutex>
 

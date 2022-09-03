@@ -18,10 +18,10 @@ bool coloring_by_f32_u8c3(const mat_age *const age,
     for (int c = 0; c < burning_ship_cols; c++) {
       const int idx = r * burning_ship_cols + c;
       if (age->data[r][c] < 0) {
-        dest[idx] = winter_u8c3(smooth->data[r][c]);
+        dest[idx] = hot_u8c3(smooth->data[r][c]);
       } else {
 
-        dest[idx] = copper_u8c3(smooth->data[r][c]);
+        dest[idx] = bone_u8c3(smooth->data[r][c]);
       }
     }
   }
@@ -87,10 +87,10 @@ bool coloring_by_f32_u8c3_more(const mat_age *const age,
       // dest[idx] = copper_u8c3(pos);
 
       if (age->data[r][c] < 0) {
-        dest[idx] = winter_u8c3(pos);
+        dest[idx] = hot_u8c3(pos);
       } else {
 
-        dest[idx] = copper_u8c3(pos);
+        dest[idx] = bone_u8c3(pos);
       }
     }
   }
@@ -121,9 +121,6 @@ bool coloring_by_f32_u8c1(const mat_age *const age,
         dest[idx] = 0;
       } else {
         const int16_t val = (colormax - colormin) * temp + colormin;
-
-        if (val > colormax || val < colormin)
-          exit(1);
 
         dest[idx] = val;
       }
