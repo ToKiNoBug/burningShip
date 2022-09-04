@@ -10,6 +10,8 @@ find_package(ZLIB 1.2.11 REQUIRED)
 #find_package(PNG REQUIRED)
 find_package(OpenMP REQUIRED)
 
+#find_package(quadmath)
+
 
 include_directories(${ZLIB_INCLUDE_DIR})
 #include_directories(${PNG_INCLUDE_DIR})

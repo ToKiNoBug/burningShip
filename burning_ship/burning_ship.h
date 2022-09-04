@@ -4,7 +4,7 @@
 // Uncomment this line to generate mandelbrot fractal
 //#define BS_MANDELBROT
 
-//#define BS_FLOAT128
+#define BS_FLOAT128
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,8 +48,8 @@ typedef union {
   uint8_t bytes[sizeof(bs_float) * 2];
 } cplx_union_d;
 
-#define burning_ship_rows (1080 * 2)
-#define burning_ship_cols (1920 * 2)
+#define burning_ship_rows (480)
+#define burning_ship_cols (480)
 
 typedef struct {
   int16_t data[burning_ship_rows][burning_ship_cols];
