@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
     wind = to_range_wind(cwind);
   }
 
-  int16_t max_it = 16;
+  int16_t max_it = 3000;
   {
     int temp;
     printf("max iterations = ");
