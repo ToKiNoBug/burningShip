@@ -89,6 +89,43 @@ int main(int argc, char **argv) {
   printf("Start rendering\n");
   smooth_by_norm2(img, norm2_mat, img_f32);
 
+  double q = 0;
+  {
+    render_by_q_options opt;
+    opt.err_tolerence = 1e-4;
+    opt.f_buffer = malloc(sizeof(double) * (1 + max_it));
+    opt.L_mean = 0.25;
+    opt.newton_max_it = 1e5;
+    opt.q_guess = 1e-2;
+
+    opt.hist_skip_rows = burning_ship_rows / 4;
+    opt.hist_skip_cols = burning_ship_cols / 4;
+
+    float temp;
+
+    printf("\n\nPlease set the value of mean_L (0.25 default) : ");
+
+    bool is_input_valid = (scanf_s("%f", &temp) == 1);
+
+    if (temp <= 0 || temp >= 1) {
+      is_input_valid = false;
+    }
+    if (!is_input_valid) {
+      opt.L_mean = 0.25;
+      printf("Invalid input. Use default value(%f).\n", opt.L_mean);
+    } else {
+      opt.L_mean = temp;
+    }
+
+    printf("mean_L = %f\n", opt.L_mean);
+
+    smooth_age_by_q(img, img_f32, max_it, &opt, img_f32, &q);
+
+    printf("q=%f\n", q);
+
+    free(opt.f_buffer);
+  }
+
   bool ok = true;
   coloring_by_f32_u8c3(img, img_f32, pixel_data);
 

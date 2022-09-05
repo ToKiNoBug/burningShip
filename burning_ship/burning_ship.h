@@ -4,7 +4,7 @@
 // Uncomment this line to generate mandelbrot fractal
 //#define BS_MANDELBROT
 
-#define BS_FLOAT128
+//#define BS_FLOAT128
 
 #ifdef __cplusplus
 extern "C" {

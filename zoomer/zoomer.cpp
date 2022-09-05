@@ -35,6 +35,14 @@ zoomer::zoomer(QWidget *parent)
 
   display_range();
 
+  this->opt.err_tolerence = 1e-4;
+  opt.f_buffer = new double[32768];
+  opt.hist_skip_cols = 0;
+  opt.hist_skip_rows = 0;
+  opt.L_mean = 0.25;
+  opt.newton_max_it = 5000;
+  opt.q_guess = -1;
+
   // repaint();
 }
 
@@ -159,6 +167,20 @@ void zoomer::repaint() {
 
   //::render_u8c1(this->mat, img.scanLine(0), ui->spin_max_iter->value());
   ::smooth_by_norm2(this->mat, this->norm2, this->mat_f32);
+
+  {
+    double q;
+    ::smooth_age_by_q(this->mat, this->mat_f32, ui->spin_max_iter->value(),
+                      &this->opt, this->mat_f32, &q);
+    if (std::isnan(q)) {
+      cout << "Error! q is nan." << endl;
+      exit(0);
+    }
+
+    cout << "q = " << q << endl;
+
+    this->opt.q_guess = q;
+  }
   /*
   bool ok = coloring_by_f32_u8c3_more(this->mat, this->mat_f32, img.scanLine(0),
                                       NAN, NAN);*/

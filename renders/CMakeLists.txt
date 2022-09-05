@@ -24,7 +24,10 @@ add_library(burning_ship_render
     renders.h 
     smooth_by_norm2.c
     coloring_by_f32.c
-    write_png.c)
+    write_png.c
+    
+    
+    distribution.cpp)
 
 target_link_libraries(burning_ship_render 
     PRIVATE 

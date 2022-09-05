@@ -41,8 +41,26 @@ bool write_png_u8c1(const void *const u8c1_rowmajor, const size_t rows,
 bool write_png_u8c3(const void *const u8c3_rowmajor, const size_t rows,
                     const size_t cols, const char *const filename);
 
+typedef struct {
+  int newton_max_it;
+  double err_tolerence;
+  double L_mean;
+  double q_guess; // q_guess<=0 for invalid value
+  double *f_buffer;
+  int hist_skip_rows;
+  int hist_skip_cols;
+} render_by_q_options;
+
+void smooth_age_by_q(
+    const mat_age *const age,
+    const mat_age_f32 *const smoothed_by_norm2, // can be NULL
+    const int16_t bs_maxit, // the max iteration when computing fractal
+    const render_by_q_options *const opt, mat_age_f32 *const dest,
+    double *const q_dest);
+
 #ifdef __cplusplus
 }
+
 #endif
 
 #endif // BS_RENDERS_H

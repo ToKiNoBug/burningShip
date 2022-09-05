@@ -36,6 +36,8 @@ private:
   cplx_union_d minmin;
   cplx_union_d maxmax;
 
+  render_by_q_options opt;
+
   std::mutex lock;
 
   std::list<std::pair<cplx_d, bs_float>> scale_record;
