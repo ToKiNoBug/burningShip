@@ -68,11 +68,10 @@ inline double max_L_mean(const int16_t maxit, const double *const f) {
   double mLm = 0;
 
   for (int idx = 1; idx <= maxit; idx++) {
-    // idx=0 have no contribution to max L means
     mLm += (f[idx] + f[idx - 1]) / 2;
   }
 
-  return mLm * 2 / M_PI;
+  return mLm;
 }
 
 double max_L_mean(const int maxit, const render_by_q_options *const opt) {
