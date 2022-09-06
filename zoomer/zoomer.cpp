@@ -39,9 +39,9 @@ zoomer::zoomer(QWidget *parent)
   opt.f_buffer = new double[32768];
   opt.hist_skip_cols = 0;
   opt.hist_skip_rows = 0;
-  opt.L_mean = 0.25;
+  opt.L_mean = 0.2;
   opt.newton_max_it = 5000;
-  opt.q_guess = -1;
+  opt.q_guess = 0.6;
 
   // repaint();
 }

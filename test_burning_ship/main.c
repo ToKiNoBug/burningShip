@@ -12,6 +12,8 @@
 
 #include <string.h>
 
+#include <math.h>
+
 int main(int argc, char **argv) {
 
   omp_set_num_threads(4);
@@ -96,7 +98,7 @@ int main(int argc, char **argv) {
     opt.f_buffer = malloc(sizeof(double) * (1 + max_it));
     opt.L_mean = 0.25;
     opt.newton_max_it = 1e5;
-    opt.q_guess = 1e-2;
+    opt.q_guess = 0.25;
 
     opt.hist_skip_rows = burning_ship_rows / 4;
     opt.hist_skip_cols = burning_ship_cols / 4;
@@ -121,7 +123,7 @@ int main(int argc, char **argv) {
 
     smooth_age_by_q(img, img_f32, max_it, &opt, img_f32, &q);
 
-    printf("q=%f\n", q);
+    printf("q=%f, log10(q)=%f\n", q, log10(q));
 
     free(opt.f_buffer);
   }
@@ -134,6 +136,7 @@ int main(int argc, char **argv) {
   sprintf(filename, "fractal_u8c3_maxit=%d.png", max_it);
 
   printf("Start writting\n");
+  write_compressed(img, "frame.bs_frame.gz");
   ok = write_png_u8c3(pixel_data, burning_ship_rows, burning_ship_cols,
                       filename);
 
