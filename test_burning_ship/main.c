@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
     render_by_q_options opt;
     opt.err_tolerence = 1e-4;
     opt.f_buffer = malloc(sizeof(double) * (1 + max_it));
-    opt.L_mean = 0.25;
+    opt.L_mean_div_L_max = 0.5;
     opt.newton_max_it = 1e5;
     opt.q_guess = 0.25;
 
@@ -113,17 +113,19 @@ int main(int argc, char **argv) {
       is_input_valid = false;
     }
     if (!is_input_valid) {
-      opt.L_mean = 0.25;
-      printf("Invalid input. Use default value(%f).\n", opt.L_mean);
+      opt.L_mean_div_L_max = 0.25;
+      printf("Invalid input. Use default value(%f).\n", opt.L_mean_div_L_max);
     } else {
-      opt.L_mean = temp;
+      opt.L_mean_div_L_max = temp;
     }
 
-    printf("mean_L = %f\n", opt.L_mean);
+    printf("mean_L / max_L = %f\n", opt.L_mean_div_L_max);
 
-    smooth_age_by_q(img, img_f32, max_it, &opt, img_f32, &q);
+    double mean_L;
 
-    printf("q=%f, log10(q)=%f\n", q, log10(q));
+    smooth_age_by_q(img, img_f32, max_it, &opt, img_f32, &q,&mean_L);
+
+    printf("q=%f, log10(q)=%f, mean_L=%f\n", q, log10(q),mean_L);
 
     free(opt.f_buffer);
   }

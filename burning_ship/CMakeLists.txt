@@ -13,6 +13,12 @@ find_package(OpenMP REQUIRED)
 #find_package(quadmath)
 
 
+if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+#add_compile_options("-Ofast")
+
+endif()
+
+
 include_directories(${ZLIB_INCLUDE_DIR})
 #include_directories(${PNG_INCLUDE_DIR})
 

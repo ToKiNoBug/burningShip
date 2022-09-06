@@ -39,7 +39,7 @@ zoomer::zoomer(QWidget *parent)
   opt.f_buffer = new double[32768];
   opt.hist_skip_cols = 0;
   opt.hist_skip_rows = 0;
-  opt.L_mean = 0.2;
+  opt.L_mean_div_L_max = 0.7;
   opt.newton_max_it = 5000;
   opt.q_guess = 0.6;
 
@@ -170,14 +170,15 @@ void zoomer::repaint() {
 
   {
     double q;
+    double L_mean;
     ::smooth_age_by_q(this->mat, this->mat_f32, ui->spin_max_iter->value(),
-                      &this->opt, this->mat_f32, &q);
+                      &this->opt, this->mat_f32, &q,&L_mean);
     if (std::isnan(q)) {
       cout << "Error! q is nan." << endl;
       exit(0);
     }
 
-    cout << "q = " << q << endl;
+    cout << "q = " << q << ", L_mean = "<<L_mean<<endl;
 
     this->opt.q_guess = q;
   }

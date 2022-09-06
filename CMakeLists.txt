@@ -18,7 +18,6 @@ include(CPack)
 if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 # this macro is added since in C, inline functions may cause `undefined reference` error in debug mode.
 add_compile_definitions(BS_Optimize_on)
-add_compile_options("-Ofast")
 
 endif()
 
