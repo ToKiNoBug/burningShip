@@ -32,6 +32,7 @@ void make_histogram(const mat_age *age, const int16_t maxit,
   for (int i = 0; i <= maxit; i++) {
     f[i] = 0.0;
   }
+  f[maxit]++;
 
   for (int r = skip_rows; r < burning_ship_rows - skip_rows; r++) {
     for (int c = skip_cols; c < burning_ship_cols - skip_cols; c++) {
@@ -46,10 +47,15 @@ void make_histogram(const mat_age *age, const int16_t maxit,
   const int converge_num =
       burning_ship_rows * burning_ship_cols - non_converge_num;
 
-  const double div = 1.0 / (converge_num + 1e-1 * (maxit + 1));
+  double sum = 0;
+  for (int idx = 0; idx <= maxit; idx++) {
+    f[idx] += 1;
+    sum += f[idx];
+  }
+
+  const double div = 1.0 / sum;
   // f->resize(int(maxit) + 1);
   for (int idx = 0; idx <= maxit; idx++) {
-    f[idx] += 1e-1;
     f[idx] *= div;
   }
 
@@ -60,10 +66,10 @@ void make_histogram(const mat_age *age, const int16_t maxit,
 
 inline double max_L_mean(const int16_t maxit, const double *const f) {
   double mLm = 0;
-  for (int idx = 1; idx < maxit; idx++) {
+
+  for (int idx = 1; idx <= maxit; idx++) {
     // idx=0 have no contribution to max L means
-    const double x_square = idx * idx;
-    mLm += f[idx];
+    mLm += (f[idx] + f[idx - 1]) / 2;
   }
 
   return mLm * 2 / M_PI;
@@ -75,8 +81,11 @@ double max_L_mean(const int maxit, const render_by_q_options *const opt) {
 
 inline double lim_h_div_q(const int16_t maxit, const double *const f) {
   double result = 0;
-  for (int idx = 0; idx < maxit; idx++) {
-    result += (idx * idx) * f[idx];
+  double prev_fun_v = 0 * 0 * f[0];
+  for (int idx = 1; idx <= maxit; idx++) {
+    const double cur_fun_v = (idx * idx) * f[idx];
+    result += (cur_fun_v + prev_fun_v) / 2;
+    prev_fun_v = (idx * idx) * f[idx];
   }
 
   return result * 2 / M_PI;
@@ -88,8 +97,11 @@ inline void compute_h(const double q, const int16_t maxit,
   assert(h_dest != nullptr);
 
   double h = 0;
+  double prev_fun_v = std::atan(q * 0 * 0) * f[0];
   for (int idx = 1; idx <= maxit; idx++) {
-    h += std::atan(q * idx * idx) * f[idx];
+    const double cur_fun_c = std::atan(q * idx * idx) * f[idx];
+    h += (cur_fun_c + prev_fun_v) / 2;
+    prev_fun_v = cur_fun_c;
   }
 
   h *= 2 / M_PI;
@@ -106,10 +118,17 @@ inline void compute_g_dg(const double q, const double L_mean,
   assert(dg_dest != nullptr);
 
   double g = 0, dg = 0;
-  for (int idx = 0; idx <= maxit; idx++) {
+  double prev_v_g = std::atan(q * 0 * 0) * f[0];
+  double prev_v_dg = 0 / (1.0 + q * q * 0 * 0) * f[0];
+  for (int idx = 1; idx <= maxit; idx++) {
     const double x_square = idx * idx;
-    g += std::atan(q * x_square) * f[idx];
-    dg += x_square / (1.0 + q * q * x_square * x_square) * f[idx];
+    const double cur_v_g = std::atan(q * x_square) * f[idx];
+    const double cur_v_dg =
+        x_square / (1.0 + q * q * x_square * x_square) * f[idx];
+    g += (cur_v_g + prev_v_g) / 2;
+    dg += (cur_v_dg + prev_v_dg);
+    prev_v_g = cur_v_g;
+    prev_v_dg = cur_v_dg;
   }
 
   g *= 2 / M_PI;

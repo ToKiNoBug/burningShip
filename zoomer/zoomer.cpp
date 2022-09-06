@@ -35,11 +35,11 @@ zoomer::zoomer(QWidget *parent)
 
   display_range();
 
-  this->opt.err_tolerence = 1e-4;
+  this->opt.err_tolerence = 1e-6;
   opt.f_buffer = new double[32768];
   opt.hist_skip_cols = 0;
   opt.hist_skip_rows = 0;
-  opt.L_mean_div_L_max = 0.7;
+  opt.L_mean_div_L_max = 0.2;
   opt.newton_max_it = 5000;
   opt.q_guess = 0.6;
 
@@ -51,6 +51,7 @@ zoomer::~zoomer() {
   delete mat;
   delete mat_f32;
   delete norm2;
+  delete opt.f_buffer;
 }
 
 void zoomer::mouse_move(const double r_relative_pos,
@@ -172,15 +173,23 @@ void zoomer::repaint() {
     double q;
     double L_mean;
     ::smooth_age_by_q(this->mat, this->mat_f32, ui->spin_max_iter->value(),
-                      &this->opt, this->mat_f32, &q,&L_mean);
+                      &this->opt, this->mat_f32, &q, &L_mean);
     if (std::isnan(q)) {
       cout << "Error! q is nan." << endl;
       exit(0);
     }
 
-    cout << "q = " << q << ", L_mean = "<<L_mean<<endl;
+    cout << "q = " << q << ", L_mean = " << L_mean << endl;
 
     this->opt.q_guess = q;
+
+    if (q <= 0) {
+      cout << "f = [";
+      for (int idx = 0; idx <= ui->spin_max_iter->value(); idx++) {
+        cout << this->opt.f_buffer[idx] << ", ";
+      }
+      cout << "];" << endl;
+    }
   }
   /*
   bool ok = coloring_by_f32_u8c3_more(this->mat, this->mat_f32, img.scanLine(0),
