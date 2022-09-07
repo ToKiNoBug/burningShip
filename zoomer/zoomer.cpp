@@ -171,15 +171,17 @@ void zoomer::repaint() {
 
   {
     double q;
-    double L_mean;
+    double L_mean = -1;
     ::smooth_age_by_q(this->mat, this->mat_f32, ui->spin_max_iter->value(),
                       &this->opt, this->mat_f32, &q, &L_mean);
-    if (std::isnan(q)) {
-      cout << "Error! q is nan." << endl;
-      exit(0);
+    if (!std::isfinite(q)) {
+      cout << "Error! q is " << q << endl;
+      exit(1);
     }
 
-    cout << "q = " << q << ", L_mean = " << L_mean << endl;
+    cout << "q = " << q << ", L_mean = " << L_mean
+         << ", h_max = " << ::max_L_mean(ui->spin_max_iter->value(), &this->opt)
+         << endl;
 
     this->opt.q_guess = q;
 

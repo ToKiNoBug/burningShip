@@ -18,7 +18,7 @@ inline double age_L(const double x, const double q) {
 
 void make_histogram(const mat_age *age, const int16_t maxit,
                     const int skip_rows, const int skip_cols, double *const f,
-                    int *const non_converge_num_dest = nullptr) {
+                    int *const divergent_num_dest = nullptr) {
   if (f == nullptr) {
     return;
   }
@@ -27,7 +27,7 @@ void make_histogram(const mat_age *age, const int16_t maxit,
 
   const int x_max = maxit;
 
-  int non_converge_num = 0;
+  int divergent_num = 0;
 
   for (int i = 0; i <= maxit; i++) {
     f[i] = 0.0;
@@ -38,14 +38,15 @@ void make_histogram(const mat_age *age, const int16_t maxit,
     for (int c = skip_cols; c < burning_ship_cols - skip_cols; c++) {
       if (age->data[r][c] >= 0) {
         f[age->data[r][c]]++;
+        divergent_num++;
       } else {
-        non_converge_num++;
       }
     }
   }
 
-  const int converge_num =
-      burning_ship_rows * burning_ship_cols - non_converge_num;
+  if (divergent_num_dest != nullptr) {
+    *divergent_num_dest = divergent_num;
+  }
 
   double sum = 0;
   for (int idx = 0; idx <= maxit; idx++) {
@@ -57,10 +58,6 @@ void make_histogram(const mat_age *age, const int16_t maxit,
   // f->resize(int(maxit) + 1);
   for (int idx = 0; idx <= maxit; idx++) {
     f[idx] *= div;
-  }
-
-  if (non_converge_num_dest != nullptr) {
-    *non_converge_num_dest = non_converge_num;
   }
 }
 
@@ -263,12 +260,14 @@ void smooth_age_by_q(
   int skip_cols = std::min(opt->hist_skip_cols, burning_ship_cols / 2);
   skip_cols = std::max(skip_cols, 0);
 
-  int non_conv_num = 0;
+  int divergent_num = 0;
   make_histogram(age, bs_maxit, skip_rows, skip_cols, opt->f_buffer,
-                 &non_conv_num);
+                 &divergent_num);
 
   double q = 0;
-  if (non_conv_num > 0) {
+  if (divergent_num <= 0) {
+    printf("All pixels are convergable.\n");
+  } else {
     if (opt->L_mean_div_L_max >= 1 || opt->L_mean_div_L_max <= 0) {
       printf("The value of L_mean_div_L_max is not in range (0,1)");
       exit(1);
