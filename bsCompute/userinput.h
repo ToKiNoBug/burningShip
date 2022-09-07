@@ -1,11 +1,10 @@
 #ifndef BSCOMPUTE_USERINPUT_H
 #define BSCOMPUTE_USERINPUT_H
 
-#include <string>
-#include <vector>
-
 #include <burning_ship.h>
+#include <string>
 #include <unordered_set>
+#include <vector>
 
 extern const std::unordered_set<::std::string> keywords;
 
@@ -23,5 +22,7 @@ void print_help();
 
 bool process_user_input(const int argC, const char *const *const argV,
                         user_input *const dest);
+
+void print_user_input(const user_input &input);
 
 #endif // BSCOMPUTE_USERINPUT_H
