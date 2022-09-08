@@ -12,8 +12,8 @@
 using ::std::cout, ::std::endl, ::std::vector, ::std::string;
 
 const std::unordered_set<string> keywords = {
-    "-centerhex", "-startscale",     "-zoomspeed", "-framecount",
-    "-maxit",     "-filenameprefix", "-compress",  "-version"};
+    "-centerhex",      "-startscale", "-zoomspeed", "-framecount", "-maxit",
+    "-filenameprefix", "-compress",   "-version",   "-mode"};
 
 void print_help() {
   cout << "User guide :\nbsCompute -keywords [value]\n";
@@ -57,6 +57,10 @@ void print_help() {
   cout << "\n  -compress\n";
   cout << "    Tells bsCompute to generate gzip compressed files. This "
           "keyword doesn\'t require a parameter.\n";
+
+  cout << "\n  -mode [ageonly|norm2|cplxc3]\n";
+  cout << "    Extra binaries to generate when computing.\n";
+  cout << "    Default value is ageonly.\n";
   cout << endl << endl;
   // cout << "    \n";
 }
@@ -280,6 +284,29 @@ bool process_user_input(const int argC, const char *const *const argV,
       ::check_sizes();
       continue;
     }
+
+    if (i.first == "-mode") {
+      if (i.second.size() <= 0) {
+        return false;
+      }
+
+      const std::string &val = i.second.back();
+      if (val == "ageonly") {
+        dest->mode = compute_mode::age_only;
+        continue;
+      }
+      if (val == "norm2") {
+        dest->mode = compute_mode::with_norm2;
+        continue;
+      }
+      if (val == "cplxc3") {
+        dest->mode = compute_mode::with_cplx_c3;
+        continue;
+      }
+
+      cout << "Unknown value for keyword -mode." << endl;
+      return false;
+    }
   }
 
   return true;
@@ -294,4 +321,15 @@ void print_user_input(const user_input &input) {
   cout << "filenameprefix = \"" << input.filenameprefix << '\"' << endl;
   cout << "compress = " << (const char *)(input.compress ? "true" : "false")
        << endl;
+  switch (input.mode) {
+  case compute_mode::age_only:
+    cout << "export matrix of int16_t only." << endl;
+    break;
+  case compute_mode::with_norm2:
+    cout << "export matrix of int16_t and norm2." << endl;
+    break;
+  case compute_mode::with_cplx_c3:
+    cout << "export matrix of int16_t and cplx_c3." << endl;
+    break;
+  }
 }

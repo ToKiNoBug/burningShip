@@ -8,6 +8,12 @@
 
 extern const std::unordered_set<::std::string> keywords;
 
+enum class compute_mode {
+  age_only,
+  with_norm2,
+  with_cplx_c3,
+};
+
 struct user_input {
   bs_cplx center{0};
   bs_float startscale{4};
@@ -15,6 +21,7 @@ struct user_input {
   int framecount{3};
   double zoomspeed{2};
   bool compress{false};
+  compute_mode mode{compute_mode::age_only};
   ::std::string filenameprefix{""};
 };
 
