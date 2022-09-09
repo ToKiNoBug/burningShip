@@ -4,15 +4,15 @@
 // Uncomment this line to generate mandelbrot fractal
 //#define BS_MANDELBROT
 
-//#define BS_FLOAT128
-
-#ifdef __cplusplus
-extern "C" {
-#endif // #ifdef __cplusplus
+#define BS_FLOAT128
 
 #include <complex.h>
 #include <stdbool.h>
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif // #ifdef __cplusplus
 
 #ifdef BS_FLOAT128
 
@@ -47,6 +47,9 @@ typedef union {
   bs_uint ui[2];
   uint8_t bytes[sizeof(bs_float) * 2];
 } cplx_union_d;
+
+bs_float bs_real(cplx_d v);
+bs_float bs_imag(cplx_d v);
 
 #define burning_ship_rows (480)
 #define burning_ship_cols (480)

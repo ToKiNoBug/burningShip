@@ -7,6 +7,9 @@ enable_testing()
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 
+#message("CMAKE_INSTALL_PREFIX = "${CMAKE_INSTALL_PREFIX})
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
+
 if(EXISTS ${CMAKE_SOURCE_DIR}/compile_commands.json)
     file(REMOVE ${CMAKE_SOURCE_DIR}/compile_commands.json)
 endif()

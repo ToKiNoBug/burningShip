@@ -1,19 +1,19 @@
 #include "userinput.h"
+#include "burning_ship.h"
+#include <cmath>
+#include <cstring>
 #include <iostream>
+#include <omp.h>
+#include <stdio.h>
 #include <unordered_map>
 #include <vector>
-
-#include <cstring>
-
-#include <cmath>
-
-#include <stdio.h>
 
 using ::std::cout, ::std::endl, ::std::vector, ::std::string;
 
 const std::unordered_set<string> keywords = {
     "-centerhex",      "-startscale", "-zoomspeed", "-framecount", "-maxit",
-    "-filenameprefix", "-compress",   "-version",   "-mode"};
+    "-filenameprefix", "-compress",   "-version",   "-mode",       "-j",
+    "-preview"};
 
 void print_help() {
   cout << "User guide :\nbsCompute -keywords [value]\n";
@@ -21,33 +21,33 @@ void print_help() {
   cout << "\n  -version\n";
   cout << "    Display detailed information of this executable.\n";
 
-  cout << "\n  -centerhex [hex]\n";
+  cout << "\n  -centerhex <hex>\n";
   cout << "    Input the center (complex number) in hex.\n";
   cout << "    No default value, you must assign the zooming center.\n";
 
-  cout << "\n  -startscale [double]\n";
+  cout << "\n  -startscale <double>\n";
   cout << "    Input the scale in height at the beginning. If the range is "
           "from -1-2i to 1+2i, then scale in height is 4.\n";
   cout << "    Default value is 5\n";
 
-  cout << "\n  -zoomspeed [double]\n";
+  cout << "\n  -zoomspeed <double>\n";
   cout << "    Input the speed of zooming in between two frames. For "
           "example, if zoomspeed is 2 and scale is 1, then the next frame\'s "
           "scale will be 0.5\n. Number greater than 1 stands for zooming in, "
           "otherwise zooming away.Only positive number is allowed.\n";
   cout << "    Default value is 2.\n";
 
-  cout << "\n  -framecount [int]\n";
+  cout << "\n  -framecount <int>\n";
   cout << "    Input the number of frames to be computed, it should be a "
           "positive integer.\n";
   cout << "    Default value is 3\n";
 
-  cout << "\n  -maxit [int]\n";
+  cout << "\n  -maxit <int>\n";
   cout << "    Input the max iteration times of each point. It shoule be a "
           "positive integer less than 32767.\n";
   cout << "    Default value is 3000\n";
 
-  cout << "\n  -filenameprefix [string]\n";
+  cout << "\n  -filenameprefix <string>\n";
   cout
       << "    The prefix of generated files. It could be either empty "
          "string, or strings like \"my-custom-prefix_\" or \"D:/fractals/\" or "
@@ -61,6 +61,17 @@ void print_help() {
   cout << "\n  -mode [ageonly|norm2|cplxc3]\n";
   cout << "    Extra binaries to generate when computing.\n";
   cout << "    Default value is ageonly.\n";
+
+  cout << "\n  -j <int>\n";
+  cout << "    Thread number when computing.\n";
+  cout << "    Default value is std::thread::hardware_concurrency(), on this "
+          "device it is "
+       << ::std::thread::hardware_concurrency() << ".\n";
+
+  cout << "\n  -preview\n";
+  cout << "    Export a preview image for each frame.\n";
+  cout << "    Default value is false.\n";
+
   cout << endl << endl;
   // cout << "    \n";
 }
@@ -159,6 +170,12 @@ bool process_user_input(const int argC, const char *const *const argV,
     }
     check_for_redundunt_input(it->first, it->second);
     ++it;
+  }
+
+  if (parameters.find("-centerhex") == parameters.end()) {
+    cout << "Fatal error : you must assign the value of center explicitly."
+         << endl;
+    return false;
   }
 
   for (auto &i : parameters) {
@@ -307,14 +324,40 @@ bool process_user_input(const int argC, const char *const *const argV,
       cout << "Unknown value for keyword -mode." << endl;
       return false;
     }
+
+    if (i.first == "-j") {
+      if (i.second.size() <= 0) {
+        return false;
+      }
+
+      const int thN = std::atoi(i.second.back().data());
+
+      if (thN <= 0) {
+        cout << "Invalid value for thread number : " << thN << endl;
+        return false;
+      } else {
+        dest->threadnum = thN;
+        continue;
+      }
+    }
+
+    if (i.first == "-preview") {
+      dest->preview = true;
+    }
   }
 
   return true;
 }
 
 void print_user_input(const user_input &input) {
-  cout << "Zooming center = " << input.center << endl;
-  cout << "startscale = " << input.startscale << endl;
+
+  cout << "Zooming center = " << (double)::bs_real(input.center);
+  if (::bs_imag(input.center) >= 0) {
+    cout << "+";
+  } else {
+  }
+  cout << (double)::bs_imag(input.center) << "i" << endl;
+  cout << "startscale = " << (double)input.startscale << endl;
   cout << "framecount = " << input.framecount << endl;
   cout << "zoomspeed = " << input.zoomspeed << endl;
   cout << "maxit = " << input.maxit << endl;
@@ -332,4 +375,6 @@ void print_user_input(const user_input &input) {
     cout << "export matrix of int16_t and cplx_c3." << endl;
     break;
   }
+  cout << "preview = " << (const char *)(input.preview ? "true" : "false")
+       << endl;
 }

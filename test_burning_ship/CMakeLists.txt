@@ -9,3 +9,7 @@ include_directories(../renders)
 
 add_executable(test_burning_ship main.c)
 target_link_libraries(test_burning_ship PRIVATE burning_ship_lib burning_ship_render )
+
+
+install(TARGETS test_burning_ship
+    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})

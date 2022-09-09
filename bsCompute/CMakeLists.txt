@@ -15,3 +15,6 @@ add_executable(bsCompute
     bsCompute.cpp)
 
 target_link_libraries(bsCompute PRIVATE burning_ship_lib colormaps burning_ship_render)
+
+install(TARGETS bsCompute
+    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})

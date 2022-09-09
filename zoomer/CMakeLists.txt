@@ -59,3 +59,6 @@ set_target_properties(zoomer PROPERTIES
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(zoomer)
 endif()
+
+install(TARGETS zoomer 
+    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})

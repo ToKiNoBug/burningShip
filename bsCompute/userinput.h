@@ -3,6 +3,7 @@
 
 #include <burning_ship.h>
 #include <string>
+#include <thread>
 #include <unordered_set>
 #include <vector>
 
@@ -23,6 +24,8 @@ struct user_input {
   bool compress{false};
   compute_mode mode{compute_mode::age_only};
   ::std::string filenameprefix{""};
+  unsigned int threadnum{::std::thread::hardware_concurrency()};
+  bool preview{false};
 };
 
 void print_help();

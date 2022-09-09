@@ -1,6 +1,5 @@
 #include "renders.h"
 #include <assert.h>
-#include <cstring>
 
 #include <cmath>
 
@@ -10,7 +9,9 @@
 
 #include <array>
 
+#include <cstring>
 #include <iostream>
+
 
 inline double age_L(const double x, const double q) {
   return 2.0 / M_PI * std::atan(q * x * x);
