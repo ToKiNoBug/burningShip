@@ -118,6 +118,13 @@ int hex_to_bin(const char *src, uint8_t *dest) {
   return n;
 }
 
+inline void bin_to_hex(const uint8_t val, char *const dest) {
+  const uint8_t high4 = val >> 4;
+  dest[0] = (high4 >= 10) ? ('A' + high4 - 10) : ('0' + high4);
+  const uint8_t low4 = val & 0b1111;
+  dest[1] = (low4 >= 10) ? ('A' + low4 - 10) : ('0' + low4);
+}
+
 inline void check_for_redundunt_input(const string &keyword,
                                       const vector<string> &val) {
   if (val.size() > 1) {
@@ -380,4 +387,60 @@ void print_user_input(const user_input &input) {
   }
   cout << "preview = " << (const char *)(input.preview ? "true" : "false")
        << endl;
+}
+
+void user_input_to_json(const user_input &input,
+                        boost::json::object *const obj_ptr) {
+  if (obj_ptr == nullptr) {
+    return;
+  }
+
+  boost::json::object &obj = *obj_ptr;
+
+  obj["rows"] = (int)burning_ship_rows;
+  obj["cols"] = (int)burning_ship_cols;
+
+  obj["size_of_bs_float"] = (int)sizeof(bs_float);
+
+  {
+    char hex[2 + sizeof(bs_cplx) * 2 + 1] = "0x";
+    const uint8_t *src = (uint8_t *)&input.center;
+
+    for (int byteid = 0; byteid < sizeof(bs_cplx); byteid++) {
+      bin_to_hex(src[byteid], hex + 2 + 2 * byteid);
+    }
+
+    cout << "hex = " << hex << endl;
+    obj["centerhex"] = hex;
+  }
+
+  obj["startscale"] = (double)input.startscale;
+
+  obj["maxit"] = input.maxit;
+
+  obj["framecount"] = input.framecount;
+
+  obj["compress"] = input.compress;
+
+  obj["threadnum"] = input.threadnum;
+
+  obj["zoomspeed"] = input.zoomspeed;
+
+  obj["filenameprefix"] = input.filenameprefix;
+
+  obj["preview"] = input.preview;
+
+  switch (input.mode) {
+  case compute_mode::age_only:
+    obj["mode"] = "ageonly";
+    break;
+  case compute_mode::with_norm2:
+    obj["mode"] = "norm2";
+    break;
+  case compute_mode::with_cplx_c3:
+    obj["mode"] = "cplxc3";
+    break;
+  }
+
+  // obj["files"] = boost::json::array(boost::json::object());
 }

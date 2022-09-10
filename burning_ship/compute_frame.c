@@ -1,6 +1,8 @@
 #include "burning_ship.h"
+#include <complex.h>
 #include <stdio.h>
 #include <string.h>
+
 
 #include "inline.h"
 

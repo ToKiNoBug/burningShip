@@ -1,4 +1,5 @@
 #include "burning_ship.h"
+#include <complex.h>
 
 bs_range_wind to_range_wind(const bs_center_wind cw) {
   bs_range_wind rw;

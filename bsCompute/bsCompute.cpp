@@ -1,9 +1,12 @@
+#include <boost/json/object.hpp>
 #include <cstdio>
 #include <cstring>
 #include <ctime>
 #include <iostream>
 #include <omp.h>
 #include <string>
+
+#include <boost/json.hpp>
 
 #include "burning_ship.h"
 #include "renders.h"
@@ -61,9 +64,19 @@ int main(int argC, char **argV) {
     return 1;
   }
 
+  const int frameidx_digits = std::ceil(std::log10(input.framecount) + 1e-3);
+
+  // the compute data set
+  boost::json::object jo;
+
+  // the main loop
   for (int frameidx = 0; frameidx < input.framecount; frameidx++) {
+    std::string idx_str = std::to_string(frameidx);
+    while (idx_str.size() < frameidx_digits) {
+      idx_str.insert(0, 1, '0');
+    }
     std::string filename =
-        input.filenameprefix + "frame" + std::to_string(frameidx) + ".bs_frame";
+        input.filenameprefix + "frame" + idx_str + ".bs_frame";
 
     if (input.compress) {
       filename += ".gz";
@@ -109,9 +122,9 @@ int main(int argC, char **argV) {
     }
 
     string filename_norm =
-        input.filenameprefix + "frame" + std::to_string(frameidx) + ".bs_norm2";
-    string filename_cplx_c3 = input.filenameprefix + "frame" +
-                              std::to_string(frameidx) + ".bs_cplx_c3";
+        input.filenameprefix + "frame" + idx_str + ".bs_norm2";
+    string filename_cplx_c3 =
+        input.filenameprefix + "frame" + idx_str + ".bs_cplx_c3";
 
     switch (input.mode) {
     case compute_mode::with_norm2:
@@ -153,8 +166,8 @@ int main(int argC, char **argV) {
       cout << "rendering preview image..." << endl;
       ::render_u8c1(mat, u8c1, input.maxit);
 
-      std::string png_name = input.filenameprefix + "frame" +
-                             std::to_string(frameidx) + "-preview.png";
+      std::string png_name =
+          input.filenameprefix + "frame" + idx_str + "-preview.png";
       cout << "exporting prewive image..." << endl;
       if (!::write_png_u8c1(u8c1, burning_ship_rows, burning_ship_cols,
                             png_name.data())) {

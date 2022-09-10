@@ -7,6 +7,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include <boost/json.hpp>
+
 extern const std::unordered_set<::std::string> keywords;
 
 enum class compute_mode {
@@ -34,5 +36,8 @@ bool process_user_input(const int argC, const char *const *const argV,
                         user_input *const dest);
 
 void print_user_input(const user_input &input);
+
+void user_input_to_json(const user_input &input,
+                        boost::json::object *const obj);
 
 #endif // BSCOMPUTE_USERINPUT_H

@@ -14,6 +14,17 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/compile_commands.json)
     file(REMOVE ${CMAKE_SOURCE_DIR}/compile_commands.json)
 endif()
 
+
+find_package(Boost COMPONENTS json)
+
+if(NOT BOOST_FOUND) 
+
+set(BOOST_ROOT D:/CppLibs/libBoost-1.79.0/lib/cmake)
+
+find_package(Boost COMPONENTS REQUIRED json)
+
+endif()
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

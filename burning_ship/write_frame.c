@@ -1,7 +1,9 @@
 #include "burning_ship.h"
+#include <complex.h>
 #include <stdio.h>
 #include <string.h>
 #include <zlib.h>
+
 
 bool write_uncompressed(const mat_age *img, const char *path) {
   return write_abstract_matrix(&img->data[0][0], sizeof(int16_t),
