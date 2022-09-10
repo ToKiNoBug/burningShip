@@ -299,6 +299,8 @@ bool process_user_input(const int argC, const char *const *const argV,
 
     if (i.first == "-version") {
       ::check_sizes();
+      cout << "frame rows = " << burning_ship_rows
+           << ", frame cols = " << burning_ship_cols << endl;
       continue;
     }
 
@@ -361,6 +363,7 @@ void print_user_input(const user_input &input) {
   cout << "framecount = " << input.framecount << endl;
   cout << "zoomspeed = " << input.zoomspeed << endl;
   cout << "maxit = " << input.maxit << endl;
+  cout << "Thread number = " << input.threadnum << endl;
   cout << "filenameprefix = \"" << input.filenameprefix << '\"' << endl;
   cout << "compress = " << (const char *)(input.compress ? "true" : "false")
        << endl;

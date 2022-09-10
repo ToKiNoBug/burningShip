@@ -110,8 +110,9 @@ bool write_png_u8c1(const void *const data, const size_t rows,
   // png_write_png(png, info, PNG_TRANSFORM_IDENTITY, NULL);
 
   // png_write_image(png, row_pointers);
-  for (int r = 0; r < rows; r++) {
-    png_write_row(png, (uint8_t *)data + r * cols);
+  const uint8_t *const datau8c1 = data;
+  for (size_t r = 0; r < rows; r++) {
+    png_write_row(png, datau8c1 + (r * cols));
   }
 
   png_write_end(png, info);
@@ -149,7 +150,7 @@ bool write_png_u8c3(const void *const data, const size_t rows,
   // png_write_png(png, info, PNG_TRANSFORM_IDENTITY, NULL);
 
   // png_write_image(png, row_pointers);
-  for (int r = 0; r < rows; r++) {
+  for (size_t r = 0; r < rows; r++) {
 
     png_write_row(png, (uint8_t *)data + r * cols * sizeof(pixel_u8c3));
   }

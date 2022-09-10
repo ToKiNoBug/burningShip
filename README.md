@@ -27,4 +27,9 @@ Currently there are 3+3 formats(3 not compressed and 3 gzipped). All of them sto
 | :--------------------------------: | :----------: | :-------------------------------------------------------------- |
 |   `.bs_frame` and `.bs_frame.gz`   |  `int16_t`   | The matrix of escape time. -1 for can't escapt.                 |
 |   `.bs_norm2` and `.bs_norm2.gz`   |  `bs_float`  | The matrix of 2-norm when iteration terminates.                 |
-| `.bs_cplx_c3` and `.bs_cplx_c3.gz` | `bs_cplx[3]` | The matrix of last 3 complex numbers then iteration terminates. |
+| `.bs_cplx_c3` and `.bs_cplx_c3.gz` | `bs_cplx[3]` | The matrix of last 3 complex numbers when iteration terminates. |
+
+## Sample commands:
+```
+bsCompute -centerhex 0x00000000000000000000000000000000 -framecount 16 -compress -preview -zoomspeed 4 -j 4 -mode norm2 -filenameprefix test/
+```

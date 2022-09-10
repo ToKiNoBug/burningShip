@@ -22,6 +22,8 @@ int main(int argC, char **argV) {
 
   if (argC == 2 && !std::strcmp(argV[1], "-version")) {
     ::check_sizes();
+    cout << "frame rows = " << burning_ship_rows
+         << ", frame cols = " << burning_ship_cols << endl;
     return 0;
   }
 
@@ -90,10 +92,20 @@ int main(int argC, char **argV) {
     cout << "Computation takes " << double(clk) * 1000 / CLOCKS_PER_SEC
          << " ms. Exporting file..." << endl;
 
+    bool ok = true;
+
     if (input.compress) {
-      write_compressed(mat, filename.data());
+      ok = write_compressed(mat, filename.data());
     } else {
-      write_uncompressed(mat, filename.data());
+      ok = write_uncompressed(mat, filename.data());
+    }
+
+    if (!ok) {
+      cout << "Failed to generate frame file " << filename
+           << ", press enter to ignore this error and continue." << endl;
+      getchar();
+    } else {
+      cout << "Generated " << filename << endl;
     }
 
     string filename_norm =
@@ -106,38 +118,57 @@ int main(int argC, char **argV) {
       if (input.compress)
         filename_norm += ".gz";
 
-      write_abstract_matrix(&mat_norm2->norm2[0][0],
-                            sizeof(mat_norm2->norm2[0][0]), burning_ship_rows,
-                            burning_ship_cols, filename_norm.data(),
-                            input.compress);
+      ok = write_abstract_matrix(&mat_norm2->norm2[0][0],
+                                 sizeof(mat_norm2->norm2[0][0]),
+                                 burning_ship_rows, burning_ship_cols,
+                                 filename_norm.data(), input.compress);
+      if (!ok) {
+        cout << "Failed to generate file " << filename_norm
+             << ", press enter to ignore this error and continue." << endl;
+        getchar();
+      } else {
+        cout << "Generated " << filename_norm << endl;
+      }
       break;
     case compute_mode::with_cplx_c3:
       if (input.compress) {
         filename_cplx_c3 += ".gz";
       }
-      write_abstract_matrix(&mat_cplx_c3->c3[0][0][0], 3 * sizeof(bs_cplx),
-                            burning_ship_rows, burning_ship_cols,
-                            filename_cplx_c3.data(), input.compress);
+      ok = write_abstract_matrix(&mat_cplx_c3->c3[0][0][0], 3 * sizeof(bs_cplx),
+                                 burning_ship_rows, burning_ship_cols,
+                                 filename_cplx_c3.data(), input.compress);
+      if (!ok) {
+        cout << "Failed to generate file " << filename_cplx_c3
+             << ", press enter to ignore this error and continue." << endl;
+        getchar();
+      } else {
+        cout << "Generated " << filename_cplx_c3 << endl;
+      }
       break;
     default:
       break;
     }
 
     if (input.preview) {
+      cout << "rendering preview image..." << endl;
       ::render_u8c1(mat, u8c1, input.maxit);
 
       std::string png_name = input.filenameprefix + "frame" +
                              std::to_string(frameidx) + "-preview.png";
-
+      cout << "exporting prewive image..." << endl;
       if (!::write_png_u8c1(u8c1, burning_ship_rows, burning_ship_cols,
                             png_name.data())) {
         cout << "Failed to write png file " << png_name
-             << ". Press enter to continue or Ctrl+C to terminate computation."
+             << ". Press enter to ignore this error and continue, or press "
+                "Ctrl+C to terminate computation."
              << endl;
         getchar();
         continue;
       }
     }
+
+    cwind.imag_span /= input.zoomspeed;
+    cwind.real_span = cwind.imag_span * burning_ship_cols / burning_ship_rows;
   }
 
   delete mat;

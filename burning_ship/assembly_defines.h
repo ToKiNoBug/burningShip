@@ -1,0 +1,1 @@
+double __complex iterate_f64_mandelbrot(double __complex C, double __complex z);

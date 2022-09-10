@@ -34,7 +34,7 @@ void render_u8c1(const mat_age *const src, uint8_t *const dest,
 #pragma omp parallel for schedule(static)
   for (int r = 0; r < burning_ship_rows; r++) {
     for (int c = 0; c < burning_ship_cols; c++) {
-      int idx = r * burning_ship_rows + c;
+      int idx = r * burning_ship_cols + c;
       if (src->data[r][c] <= -1) {
         dest[idx] = color_of_negative_1;
       } else {

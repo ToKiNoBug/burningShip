@@ -4,7 +4,7 @@
 // Uncomment this line to generate mandelbrot fractal
 //#define BS_MANDELBROT
 
-#define BS_FLOAT128
+//#define BS_FLOAT128
 
 #include <complex.h>
 #include <stdbool.h>
@@ -51,8 +51,13 @@ typedef union {
 bs_float bs_real(cplx_d v);
 bs_float bs_imag(cplx_d v);
 
-#define burning_ship_rows (480)
-#define burning_ship_cols (480)
+#ifndef burning_ship_rows
+#define burning_ship_rows 480
+#endif
+
+#ifndef burning_ship_cols
+#define burning_ship_cols 480
+#endif
 
 typedef struct {
   int16_t data[burning_ship_rows][burning_ship_cols];

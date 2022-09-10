@@ -24,6 +24,9 @@ add_compile_definitions(BS_Optimize_on)
 
 endif()
 
+add_compile_definitions(burning_ship_rows=2160)
+add_compile_definitions(burning_ship_cols=3840)
+
 
 add_subdirectory(colormaps)
 add_subdirectory(burning_ship)
