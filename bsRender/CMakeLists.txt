@@ -17,7 +17,8 @@ add_executable(bsRender
     
     userinput_render.h
     userinput_render.cpp
-    bsRender.cpp)
+    bsRender.cpp 
+    execute_task.cpp)
 
     
 

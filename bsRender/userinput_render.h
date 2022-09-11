@@ -66,4 +66,9 @@ bool process_input(const int argCount, const char *const *const argVal,
 
 bool check_file_readablity(render_options &);
 
+size_t read_matrix(const char *const filename, void *const dest,
+                   const int size_element);
+
+void execute_rendering(const render_options &);
+
 #endif // BSRENDER_USERINPUT_RENDER_H

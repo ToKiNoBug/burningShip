@@ -29,5 +29,11 @@ int main(int argC, char **argV) {
 
   print_user_input(input);
 
+  cout << "Press enter to confirm and start rendering." << endl;
+
+  getchar();
+
+  execute_rendering(input);
+
   return 0;
 }
