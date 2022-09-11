@@ -4,13 +4,13 @@
 #include <burning_ship.h>
 
 #include <string>
-#include <unordered_map>
+#include <thread>
 #include <unordered_set>
 #include <vector>
 
 const ::std::unordered_set<::std::string>
-    keywords({"-j", "-fps", "-compute_json", "-render", "-dest_dir", "-version",
-              "-lightness"});
+    keywords({"-j", "-fps", "-computejson", "-rendermethod", "-pngprefix",
+              "-version", "-lightness", "-pngrows", "-pngcols"});
 
 enum class render_method {
   age_linear, // map iteration times to [0,1] linearly
@@ -32,11 +32,25 @@ struct binary_files {
 };
 
 struct render_options {
+public:
   int fps{60};
-  render_method method;
+  render_method method{render_method::age_linear};
   ::std::vector<binary_files> sources;
-  ::std::string dest_dir{""};
+  ::std::string dest_prefix{""};
   double lightness{0.125};
+  int age_maxit;
+  int render_maxit;
+
+  int threadnum{(int)::std::thread::hardware_concurrency()};
+
+  int png_rows;
+  int png_cols;
+
+  bool is_norm2_ok{false};
+  bool is_cplxc3_ok{false};
+
+  inline int png_height() const { return this->png_rows; }
+  inline int png_width() const { return this->png_cols; }
 
   inline int framecount() const { return sources.size(); }
   inline int png_count() const { return fps * framecount(); }
@@ -46,5 +60,7 @@ void print_help();
 
 bool process_input(const int argCount, const char *const *const argVal,
                    render_options *const dest);
+
+bool check_file_readablity(render_options &);
 
 #endif // BSRENDER_USERINPUT_RENDER_H
