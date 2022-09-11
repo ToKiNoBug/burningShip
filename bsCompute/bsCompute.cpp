@@ -1,7 +1,9 @@
+#include <boost/json/array.hpp>
 #include <boost/json/object.hpp>
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <fstream>
 #include <iostream>
 #include <omp.h>
 #include <string>
@@ -69,6 +71,16 @@ int main(int argC, char **argV) {
   // the compute data set
   boost::json::object jo;
 
+  user_input_to_json(input, &jo);
+
+  jo["files"] = {boost::json::array()};
+  jo["files"].as_array().resize(input.framecount);
+
+  for (auto &arr : (jo["files"].as_array())) {
+    arr = {"", "", ""};
+  }
+  // jo["files"].as_array().resize(input.framecount);
+
   // the main loop
   for (int frameidx = 0; frameidx < input.framecount; frameidx++) {
     std::string idx_str = std::to_string(frameidx);
@@ -82,7 +94,7 @@ int main(int argC, char **argV) {
       filename += ".gz";
     }
 
-    cout << "Computing frame " << frameidx
+    cout << "\nComputing frame " << frameidx
          << ", scale = " << (double)cwind.imag_span
          << ", filename = " << filename << endl;
 
@@ -126,10 +138,17 @@ int main(int argC, char **argV) {
     string filename_cplx_c3 =
         input.filenameprefix + "frame" + idx_str + ".bs_cplx_c3";
 
+    // jo["files"].as_array().emplace_back(boost::json::array({"", "", ""}));
+    jo["files"].as_array()[frameidx].as_array()[0] = filename;
+    // jo["files"].as_array()[frameidx].as_array()[1] = "";
+    // jo["files"].as_array()[frameidx].as_array()[2] = "";
+
     switch (input.mode) {
     case compute_mode::with_norm2:
       if (input.compress)
         filename_norm += ".gz";
+
+      jo["files"].as_array()[frameidx].as_array()[1] = filename_norm;
 
       ok = write_abstract_matrix(&mat_norm2->norm2[0][0],
                                  sizeof(mat_norm2->norm2[0][0]),
@@ -147,6 +166,8 @@ int main(int argC, char **argV) {
       if (input.compress) {
         filename_cplx_c3 += ".gz";
       }
+      jo["files"].as_array()[frameidx].as_array()[2] = filename_cplx_c3;
+
       ok = write_abstract_matrix(&mat_cplx_c3->c3[0][0][0], 3 * sizeof(bs_cplx),
                                  burning_ship_rows, burning_ship_cols,
                                  filename_cplx_c3.data(), input.compress);
@@ -183,6 +204,23 @@ int main(int argC, char **argV) {
     cwind.imag_span /= input.zoomspeed;
     cwind.real_span = cwind.imag_span * burning_ship_cols / burning_ship_rows;
   }
+
+  std::ofstream ofile("compute_options.json", std::ios::out);
+
+  if (!ofile) {
+    cout << "Failed to create file "
+         << "\"compute_options.json\""
+         << ", the json will be exported to console.\n\n\n\n"
+         << endl;
+
+    cout << jo << endl;
+    cout << "\n\n\n" << endl;
+  } else {
+    ofile << jo;
+
+    ofile.close();
+  }
+  cout << "compute_options.json finished." << endl;
 
   delete mat;
 

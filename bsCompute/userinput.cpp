@@ -441,6 +441,4 @@ void user_input_to_json(const user_input &input,
     obj["mode"] = "cplxc3";
     break;
   }
-
-  // obj["files"] = boost::json::array(boost::json::object());
 }
