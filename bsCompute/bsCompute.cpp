@@ -73,6 +73,16 @@ int main(int argC, char **argV) {
 
   user_input_to_json(input, &jo);
 
+  {
+    std::string command(argV[0]);
+
+    for (int idx = 1; idx < argC; idx++) {
+      command += ' ';
+      command += argV[idx];
+    }
+    jo["compute_command"] = command;
+  }
+
   jo["files"] = {boost::json::array()};
   jo["files"].as_array().resize(input.framecount);
 

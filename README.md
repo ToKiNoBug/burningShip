@@ -33,4 +33,7 @@ Currently there are 3+3 formats(3 not compressed and 3 gzipped). All of them sto
 ## Sample commands:
 ```
 bsCompute -centerhex 0x00000000000000000000000000000000 -framecount 16 -compress -preview -zoomspeed 4 -j 4 -mode norm2 -filenameprefix test/ -maxit 255
+
+
+bsCompute -centerhex 0xdddb3abfbc71ac5c49c65fea032ffebfbc022feb8231c7f4c255f375c70dffbf -framecount 2 -compress -preview -zoomspeed 4 -j 4 -mode norm2 -filenameprefix test/ -maxit 255
 ```

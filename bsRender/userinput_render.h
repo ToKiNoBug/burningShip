@@ -1,8 +1,6 @@
 #ifndef BSRENDER_USERINPUT_RENDER_H
 #define BSRENDER_USERINPUT_RENDER_H
 
-#include <burning_ship.h>
-
 #include <string>
 #include <thread>
 #include <unordered_set>
@@ -10,7 +8,7 @@
 
 const ::std::unordered_set<::std::string>
     keywords({"-j", "-fps", "-computejson", "-rendermethod", "-pngprefix",
-              "-version", "-lightness", "-pngrows", "-pngcols"});
+              "-version", "-lightness", "-rendermaxit"});
 
 enum class render_method {
   age_linear, // map iteration times to [0,1] linearly
@@ -38,25 +36,30 @@ public:
   ::std::vector<binary_files> sources;
   ::std::string dest_prefix{""};
   double lightness{0.125};
+  double zoomspeed;
   int age_maxit;
-  int render_maxit;
+  int render_maxit{50000};
 
   int threadnum{(int)::std::thread::hardware_concurrency()};
 
-  int png_rows;
-  int png_cols;
+  // int png_rows;
+  // int png_cols;
 
-  bool is_norm2_ok{false};
-  bool is_cplxc3_ok{false};
+  // bool is_norm2_ok{false};
+  // bool is_cplxc3_ok{false};
 
-  inline int png_height() const { return this->png_rows; }
-  inline int png_width() const { return this->png_cols; }
+  // inline int png_height() const { return this->png_rows; }
+  // inline int png_width() const { return this->png_cols; }
 
   inline int framecount() const { return sources.size(); }
   inline int png_count() const { return fps * framecount(); }
 };
 
 void print_help();
+
+void print_version();
+
+void print_user_input(const render_options &);
 
 bool process_input(const int argCount, const char *const *const argVal,
                    render_options *const dest);
