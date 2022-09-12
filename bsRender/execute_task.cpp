@@ -14,6 +14,8 @@
 #include <renders.h>
 #include <unordered_map>
 
+#include <omp.h>
+
 using std::cout, std::endl;
 
 using std::vector, std::string, std::unique_ptr;
@@ -130,7 +132,7 @@ public:
 
   // id is useless
   mat_ptrs *allocate(const int id = 0) {
-    lock.lock();
+    // lock.lock();
 
     for (auto &pair : pool) {
       if (!pair.second) {
@@ -150,7 +152,7 @@ public:
 
   // id is useless
   void deallocate(mat_ptrs *ptr, const int id = 0) {
-    lock.lock();
+    // lock.lock();
 
     auto it = pool.find(ptr);
     if (it != pool.end()) {
@@ -158,7 +160,7 @@ public:
     }
 
     cout << "Deallocated for id " << id << endl;
-    lock.unlock();
+    // lock.unlock();
   }
 };
 
@@ -173,14 +175,19 @@ void execute_rendering(const render_options &input) {
 
   const int max_digits = std::ceil(std::log10(input.png_count()) + 1e-2);
 
-  std::mutex cout_lock;
+  // std::mutex cout_lock;
   size_t tasks_finished = 0;
   size_t failed_count = 0;
   const size_t tasks = input.png_count();
 
+  omp_lock_t lock;
+  omp_init_lock(&lock);
+
 #pragma omp parallel for schedule(dynamic)
   for (int frameidx = 0; frameidx < input.sources.size(); frameidx++) {
+    // omp_set_lock(&lock);
     mat_ptrs *const mats = pool.allocate(frameidx);
+    // omp_unset_lock(&lock);
     thread_local string filename;
     filename.reserve(1024);
 
@@ -226,7 +233,7 @@ void execute_rendering(const render_options &input) {
         const uint8_t *const first_address =
             (uint8_t *)mats->image.get()->data();
 
-        mats->row_ptrs_cache.resize(burning_ship_rows - 2 * skip_rows);
+        mats->row_ptrs_cache.resize(image_rows);
 
         for (int r = 0; r < image_rows; r++) {
           mats->row_ptrs_cache[r] =
@@ -238,7 +245,7 @@ void execute_rendering(const render_options &input) {
             image_rows, image_cols, filename.data());
       }
 
-      cout_lock.lock();
+      omp_set_lock(&lock);
       if (ok) {
         tasks_finished++;
         cout << "[ " << tasks_finished << " / " << tasks << " , "
@@ -248,8 +255,13 @@ void execute_rendering(const render_options &input) {
         failed_count++;
         cout << "Failed to generate file " << endl;
       }
-      cout_lock.unlock();
+      omp_unset_lock(&lock);
     }
+
+    // omp_set_lock(&lock);
     pool.deallocate(mats, frameidx);
+    // omp_unset_lock(&lock);
   }
+
+  omp_destroy_lock(&lock);
 }
