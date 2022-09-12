@@ -124,6 +124,47 @@ bool write_png_u8c1(const void *const data, const size_t rows,
   return true;
 }
 
+bool write_png_u8c1_rowptrs(const uint8_t *const *const u8c1_row_ptrs,
+                            const size_t rows, const size_t cols,
+                            const char *const filename) {
+
+  if (!exmaine_input(filename, u8c1_row_ptrs, rows, cols))
+    return false;
+
+  FILE *file = NULL;
+  png_struct *png = NULL;
+  png_info *info = NULL;
+
+  if (!create_structs(&file, &png, &info, filename)) {
+    return false;
+  }
+
+  png_init_io(png, file);
+
+  // png_set_filler(png, 0, PNG_FILTER_NONE);
+
+  png_set_IHDR(png, info, cols, rows, 8, PNG_COLOR_TYPE_GRAY,
+               PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
+               PNG_FILTER_TYPE_DEFAULT);
+  png_set_compression_level(png, Z_BEST_COMPRESSION);
+
+  png_write_info(png, info);
+  // png_write_png(png, info, PNG_TRANSFORM_IDENTITY, NULL);
+
+  // png_write_image(png, u8c1_row_ptrs);
+  for (size_t r = 0; r < rows; r++) {
+    png_write_row(png, u8c1_row_ptrs[r]);
+  }
+
+  png_write_end(png, info);
+
+  png_destroy_write_struct(&png, &info);
+
+  fclose(file);
+
+  return true;
+}
+
 bool write_png_u8c3(const void *const data, const size_t rows,
                     const size_t cols, const char *const filename) {
 

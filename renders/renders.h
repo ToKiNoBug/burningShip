@@ -38,6 +38,10 @@ bool coloring_by_f32_u8c3_more(const mat_age *const age,
 bool write_png_u8c1(const void *const u8c1_rowmajor, const size_t rows,
                     const size_t cols, const char *const filename);
 
+bool write_png_u8c1_rowptrs(const uint8_t *const *const u8c1_row_ptrs,
+                            const size_t rows, const size_t cols,
+                            const char *const filename);
+
 bool write_png_u8c3(const void *const u8c3_rowmajor, const size_t rows,
                     const size_t cols, const char *const filename);
 

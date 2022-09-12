@@ -8,7 +8,7 @@
 
 const ::std::unordered_set<::std::string>
     keywords({"-j", "-fps", "-computejson", "-rendermethod", "-pngprefix",
-              "-version", "-lightness", "-rendermaxit"});
+              "-version", "-lightness", "-rendermaxit", "-help"});
 
 enum class render_method {
   age_linear, // map iteration times to [0,1] linearly
