@@ -137,13 +137,13 @@ public:
     for (auto &pair : pool) {
       if (!pair.second) {
         pair.second = true;
-        cout << "Allocated for id " << id << endl;
+        // cout << "Allocated for id " << id << endl;
         lock.unlock();
         return pair.first;
       }
     }
     auto ret = pool.emplace(new mat_ptrs(rm, maxit), true);
-    cout << "Allocated for id " << id << " with system call." << endl;
+    // cout << "Allocated for id " << id << " with system call." << endl;
     lock.unlock();
     return ret.first->first;
   }
@@ -159,8 +159,8 @@ public:
       it->second = false;
     }
 
-    cout << "Deallocated for id " << id << endl;
-    // lock.unlock();
+    // cout << "Deallocated for id " << id << endl;
+    //  lock.unlock();
   }
 };
 
@@ -264,4 +264,6 @@ void execute_rendering(const render_options &input) {
   }
 
   omp_destroy_lock(&lock);
+
+  cout << "All tasks finished with " << failed_count << " error(s)" << endl;
 }

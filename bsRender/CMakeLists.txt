@@ -10,6 +10,7 @@ include_directories(../renders)
 
 
 find_package(Boost COMPONENTS REQUIRED json)
+find_package(OpenMP REQUIRED)
 
 include_directories(${BOOST_INCLUDE_DIR})
 
@@ -22,7 +23,14 @@ add_executable(bsRender
 
     
 
-target_link_libraries(bsRender PRIVATE burning_ship_lib colormaps burning_ship_render Boost::json)
+target_link_libraries(bsRender 
+    PRIVATE 
+    
+    burning_ship_lib 
+    colormaps 
+    burning_ship_render 
+    Boost::json 
+    OpenMP::OpenMP_CXX)
 
 
 install(TARGETS bsRender
