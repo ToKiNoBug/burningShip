@@ -184,7 +184,6 @@ void execute_rendering(const render_options &input) {
     thread_local string filename;
     filename.reserve(1024);
 
-    sleep(3000);
     // render
     for (int pngidx = 0; pngidx < input.fps; pngidx++) {
       // set the filename
@@ -224,7 +223,8 @@ void execute_rendering(const render_options &input) {
       // render as u8c1 linear
       if (input.method == render_method::age_linear) {
         // the first address of this matrix
-        uint8_t *const first_address = (uint8_t *)mats->image.get()->data();
+        const uint8_t *const first_address =
+            (uint8_t *)mats->image.get()->data();
 
         mats->row_ptrs_cache.resize(burning_ship_rows - 2 * skip_rows);
 
@@ -233,8 +233,9 @@ void execute_rendering(const render_options &input) {
               first_address + (skip_rows + r) * burning_ship_cols + skip_cols;
         }
 
-        ok = ::write_png_u8c1_rowptrs((uint8_t **)mats->row_ptrs_cache.data(),
-                                      image_rows, image_cols, filename.data());
+        ok = ::write_png_u8c1_rowptrs(
+            (const uint8_t *const *const)mats->row_ptrs_cache.data(),
+            image_rows, image_cols, filename.data());
       }
 
       cout_lock.lock();
