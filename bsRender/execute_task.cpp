@@ -62,7 +62,7 @@ size_t read_matrix(const char *const filename, void *const dest,
 struct mat_ptrs {
   mat_ptrs(::render_method rm = render_method::age_linear,
            const size_t maxit = 3)
-      : mat_int16(new mat_age),
+      : mat_int16(new mat_age), mat_norm2(new norm2_matc1),
         mat_f32((rm != render_method::age_linear) ? (new mat_age_f32)
                                                   : nullptr),
         mat_cplxc3(nullptr), f(maxit), row_ptrs_cache(burning_ship_rows),
@@ -73,6 +73,15 @@ struct mat_ptrs {
       exit(1);
     }
     memset(&mat_int16->data[0][0], 0, sizeof(::mat_age));
+
+    if (rm == render_method::age_norm2_q || rm == render_method::norm2_only) {
+      if (mat_norm2 == nullptr) {
+        cout << "Failed to allocate memory for mat_norm2." << endl;
+        exit(1);
+      }
+      memset(&mat_norm2->norm2[0][0], 0, sizeof(norm2_matc1));
+    }
+
     if ((rm != render_method::age_linear) && (mat_f32 == nullptr)) {
       cout << "Failed to allocate memory for mat_f32." << endl;
       exit(1);
@@ -103,6 +112,7 @@ struct mat_ptrs {
   ~mat_ptrs() = default;
 
   unique_ptr<::mat_age> mat_int16;
+  unique_ptr<::norm2_matc1> mat_norm2;
   unique_ptr<::mat_age_f32> mat_f32;
   unique_ptr<::cplx_matc3> mat_cplxc3;
   vector<double> f;
@@ -132,7 +142,7 @@ public:
 
   // id is useless
   mat_ptrs *allocate(const int id = 0) {
-    // lock.lock();
+    lock.lock();
 
     for (auto &pair : pool) {
       if (!pair.second) {
@@ -152,7 +162,7 @@ public:
 
   // id is useless
   void deallocate(mat_ptrs *ptr, const int id = 0) {
-    // lock.lock();
+    lock.lock();
 
     auto it = pool.find(ptr);
     if (it != pool.end()) {
@@ -160,7 +170,7 @@ public:
     }
 
     // cout << "Deallocated for id " << id << endl;
-    //  lock.unlock();
+    lock.unlock();
   }
 };
 
@@ -168,10 +178,6 @@ public:
 void execute_rendering(const render_options &input) {
 
   obj_pool pool(input.threadnum + 2, input.method, input.age_maxit);
-
-  cout << "All memory allocation finished. Press enter to continue." << endl;
-
-  getchar();
 
   const int max_digits = std::ceil(std::log10(input.png_count()) + 1e-2);
 
@@ -185,11 +191,38 @@ void execute_rendering(const render_options &input) {
 
 #pragma omp parallel for schedule(dynamic)
   for (int frameidx = 0; frameidx < input.sources.size(); frameidx++) {
-    // omp_set_lock(&lock);
+
     mat_ptrs *const mats = pool.allocate(frameidx);
-    // omp_unset_lock(&lock);
+
+    const auto &sources = input.sources[frameidx];
+
+    read_matrix(sources.bs_frame.data(), &mats->mat_int16->data[0][0],
+                sizeof(int16_t));
+
+    if (!sources.bs_norm2.empty()) {
+      read_matrix(sources.bs_norm2.data(), &mats->mat_norm2->norm2[0][0],
+                  sizeof(bs_float));
+    }
+
+    if (!sources.bs_cplx_c3.empty()) {
+      read_matrix(sources.bs_cplx_c3.data(), &mats->mat_cplxc3->c3[0][0][0],
+                  sizeof(bs_cplx[3]));
+    }
+
     thread_local string filename;
     filename.reserve(1024);
+
+    // render the frame
+    if (input.method == render_method::age_linear) {
+      bool ok =
+          ::render_u8c1(mats->mat_int16.get(),
+                        (uint8_t *)mats->image.get()->data(), input.age_maxit);
+      if (!ok) {
+        omp_set_lock(&lock);
+        cout << "Failed to render frame " << frameidx << endl;
+        omp_unset_lock(&lock);
+      }
+    }
 
     // render
     for (int pngidx = 0; pngidx < input.fps; pngidx++) {
@@ -206,11 +239,6 @@ void execute_rendering(const render_options &input) {
       filename += std::to_string(current_number);
       filename += ".png";
 
-      // render the frame
-      if ((pngidx == 0) && (input.method == render_method::age_linear)) {
-        ::render_u8c1(mats->mat_int16.get(),
-                      (uint8_t *)mats->image.get()->data(), input.age_maxit);
-      }
       // compute the image size
       const double pngidx_div_fps = double(pngidx) / input.fps;
 
@@ -238,6 +266,11 @@ void execute_rendering(const render_options &input) {
         for (int r = 0; r < image_rows; r++) {
           mats->row_ptrs_cache[r] =
               first_address + (skip_rows + r) * burning_ship_cols + skip_cols;
+        }
+        for (int r = mats->row_ptrs_cache.size();
+             r < mats->row_ptrs_cache.capacity(); r++) {
+          const void **ptrptr = mats->row_ptrs_cache.data();
+          ptrptr[r] = nullptr;
         }
 
         ok = ::write_png_u8c1_rowptrs(

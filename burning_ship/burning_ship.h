@@ -134,7 +134,7 @@ bool write_abstract_matrix(const void *const, const uint16_t element_bytes,
 // here are functions to render a frame
 
 // render a u8c1 image linearly
-void render_u8c1(const mat_age *const, uint8_t *const u8c1_row_major,
+bool render_u8c1(const mat_age *const src, uint8_t *const dest,
                  const int16_t max_iterations);
 
 // check the size of bs_float,bs_uint and bs_cplx

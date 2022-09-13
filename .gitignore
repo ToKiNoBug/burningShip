@@ -36,3 +36,6 @@ compile_commands.json
 *.mexw64
 CMakeLists.txt.user
 temp.txt
+bsRender/Untitled-1.json
+.gitignore
+bsRender/Untitled-2.json

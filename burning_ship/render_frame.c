@@ -6,7 +6,7 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-void render_u8c1(const mat_age *const src, uint8_t *const dest,
+bool render_u8c1(const mat_age *const src, uint8_t *const dest,
                  const int16_t max_iterations) {
 
   static const uint8_t color_of_negative_1 = 0;
@@ -15,7 +15,7 @@ void render_u8c1(const mat_age *const src, uint8_t *const dest,
   static const uint8_t color_span = color_max - color_min;
 
   if (src == NULL || dest == NULL) {
-    return;
+    return false;
   }
 
   int16_t max_positive = src->data[0][0];
@@ -32,7 +32,7 @@ void render_u8c1(const mat_age *const src, uint8_t *const dest,
 
   const int16_t span_positive = MAX(max_positive - min_positive, 1);
 
-#pragma omp parallel for schedule(static)
+  //#pragma omp parallel for schedule(static)
   for (int r = 0; r < burning_ship_rows; r++) {
     for (int c = 0; c < burning_ship_cols; c++) {
       int idx = r * burning_ship_cols + c;
@@ -45,4 +45,6 @@ void render_u8c1(const mat_age *const src, uint8_t *const dest,
       }
     }
   }
+
+  return true;
 }
