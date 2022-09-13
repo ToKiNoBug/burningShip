@@ -8,6 +8,7 @@
 #include <array>
 #include <cmath>
 #include <colors.h>
+#include <ctime>
 #include <iostream>
 #include <memory>
 #include <mutex>
@@ -189,6 +190,8 @@ void execute_rendering(const render_options &input) {
   omp_lock_t lock;
   omp_init_lock(&lock);
 
+  std::clock_t time = std::clock();
+
 #pragma omp parallel for schedule(dynamic)
   for (int frameidx = 0; frameidx < input.sources.size(); frameidx++) {
 
@@ -212,16 +215,74 @@ void execute_rendering(const render_options &input) {
     thread_local string filename;
     filename.reserve(1024);
 
+    bool smooth_norm2;
+    bool color_by_norm2;
+    bool render_age_only;
+    bool write_gray;
+    bool use_q_method;
+
+    switch (input.method) {
+    case render_method::age_linear:
+      smooth_norm2 = false;
+      color_by_norm2 = false;
+      write_gray = true;
+      render_age_only = true;
+      use_q_method = false;
+      break;
+    case render_method::age_norm2_q:
+      smooth_norm2 = true;
+      color_by_norm2 = false;
+      write_gray = false;
+      render_age_only = false;
+      use_q_method = true;
+      break;
+    case render_method::norm2_only:
+      smooth_norm2 = true;
+      color_by_norm2 = true;
+      write_gray = false;
+      render_age_only = false;
+      use_q_method = false;
+      break;
+    case render_method::age_q:
+      smooth_norm2 = false;
+      color_by_norm2 = false;
+      write_gray = false;
+      render_age_only = true;
+      use_q_method = true;
+      break;
+    }
+
     // render the frame
-    if (input.method == render_method::age_linear) {
-      bool ok =
-          ::render_u8c1(mats->mat_int16.get(),
-                        (uint8_t *)mats->image.get()->data(), input.age_maxit);
-      if (!ok) {
-        omp_set_lock(&lock);
-        cout << "Failed to render frame " << frameidx << endl;
-        omp_unset_lock(&lock);
-      }
+    if (write_gray) {
+      render_u8c1(mats->mat_int16.get(), (uint8_t *)mats->image.get()->data(),
+                  input.age_maxit);
+    }
+
+    if (smooth_norm2) {
+      smooth_by_norm2(mats->mat_int16.get(), mats->mat_norm2.get(),
+                      mats->mat_f32.get());
+    }
+
+    if (color_by_norm2) {
+      coloring_by_f32_u8c3(mats->mat_int16.get(), mats->mat_f32.get(),
+                           mats->image->data());
+    }
+
+    thread_local ::render_by_q_options q_opts;
+
+    if (use_q_method) {
+      // do no rendering here cause rendering can't be done ahead of time.
+      // set the value of q_opts.
+      q_opts.newton_max_it = input.render_maxit;
+      q_opts.err_tolerence = 1e-5;
+      q_opts.f_buffer = mats->f.data();
+      q_opts.L_mean_div_L_max = input.lightness;
+      // don't guess at the first time.
+      q_opts.q_guess = -1;
+
+      // these members are determined by skip_rows and skip_cols;
+      // q_opts.hist_skip_cols;
+      // q_opts.hist_skip_rows;
     }
 
     // render
@@ -255,8 +316,23 @@ void execute_rendering(const render_options &input) {
       const int image_rows = burning_ship_rows - 2 * skip_rows;
       const int image_cols = burning_ship_cols - 2 * skip_cols;
       bool ok = false;
-      // render as u8c1 linear
-      if (input.method == render_method::age_linear) {
+
+      if (use_q_method) {
+        q_opts.hist_skip_cols = skip_cols;
+        q_opts.hist_skip_rows = skip_rows;
+        double q;
+        ::smooth_age_by_q(mats->mat_int16.get(),
+                          (render_age_only) ? (nullptr) : (mats->mat_f32.get()),
+                          input.age_maxit, &q_opts, mats->mat_f32.get(), &q,
+                          nullptr);
+        q_opts.q_guess = q;
+
+        ::coloring_by_f32_u8c3(mats->mat_int16.get(), mats->mat_f32.get(),
+                               mats->image->data());
+      }
+
+      // export as u8c1
+      if (write_gray) {
         // the first address of this matrix
         const uint8_t *const first_address =
             (uint8_t *)mats->image.get()->data();
@@ -276,6 +352,24 @@ void execute_rendering(const render_options &input) {
         ok = ::write_png_u8c1_rowptrs(
             (const uint8_t *const *const)mats->row_ptrs_cache.data(),
             image_rows, image_cols, filename.data());
+      }
+      // export as u8c3
+      if (!write_gray) {
+        const pixel_u8c3 *const first_address = mats->image->data();
+
+        mats->row_ptrs_cache.resize(image_rows);
+
+        for (int r = 0; r < image_rows; r++) {
+          mats->row_ptrs_cache[r] =
+              first_address + (skip_rows + r) * burning_ship_cols + skip_cols;
+        }
+        for (int r = mats->row_ptrs_cache.size();
+             r < mats->row_ptrs_cache.capacity(); r++) {
+          const void **ptrptr = mats->row_ptrs_cache.data();
+          ptrptr[r] = nullptr;
+        }
+        ok = ::write_png_u8c3_rowptrs(mats->row_ptrs_cache.data(), image_rows,
+                                      image_cols, filename.data());
       }
 
       omp_set_lock(&lock);
@@ -298,5 +392,9 @@ void execute_rendering(const render_options &input) {
 
   omp_destroy_lock(&lock);
 
+  time = std::clock() - time;
+
   cout << "All tasks finished with " << failed_count << " error(s)" << endl;
+  cout << "Computation cost " << double(time) / CLOCKS_PER_SEC << " seconds."
+       << endl;
 }

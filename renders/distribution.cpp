@@ -11,7 +11,7 @@
 
 #include <cstring>
 #include <iostream>
-
+#include <limits>
 
 inline double age_L(const double x, const double q) {
   return 2.0 / M_PI * std::atan(q * x * x);

@@ -45,6 +45,10 @@ bool write_png_u8c1_rowptrs(const uint8_t *const *const u8c1_row_ptrs,
 bool write_png_u8c3(const void *const u8c3_rowmajor, const size_t rows,
                     const size_t cols, const char *const filename);
 
+bool write_png_u8c3_rowptrs(const void *const *const u8c3_rows_ptrs,
+                            const size_t rows, const size_t cols,
+                            const char *const filename);
+
 typedef struct {
   int newton_max_it;
   double err_tolerence;
