@@ -6,9 +6,9 @@
 #include <unordered_set>
 #include <vector>
 
-const ::std::unordered_set<::std::string>
-    keywords({"-j", "-fps", "-computejson", "-rendermethod", "-pngprefix",
-              "-version", "-lightness", "-rendermaxit", "-help"});
+const ::std::unordered_set<::std::string> keywords(
+    {"-j", "-fps", "-computejson", "-rendermethod", "-pngprefix", "-version",
+     "-lightness", "-rendermaxit", "-help", "-adaptivef32"});
 
 enum class render_method {
   age_linear, // map iteration times to [0,1] linearly
@@ -39,6 +39,8 @@ public:
   double zoomspeed;
   int age_maxit;
   int render_maxit{50000};
+
+  bool self_adaptive_f32{false};
 
   int threadnum{(int)::std::thread::hardware_concurrency()};
 

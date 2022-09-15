@@ -326,9 +326,14 @@ void execute_rendering(const render_options &input) {
                           input.age_maxit, &q_opts, mats->mat_f32.get(), &q,
                           nullptr);
         q_opts.q_guess = q;
-
-        ::coloring_by_f32_u8c3(mats->mat_int16.get(), mats->mat_f32.get(),
-                               mats->image->data());
+        if (!input.self_adaptive_f32) {
+          ::coloring_by_f32_u8c3(mats->mat_int16.get(), mats->mat_f32.get(),
+                                 mats->image->data());
+        } else {
+          ::coloring_by_f32_u8c3_more(mats->mat_int16.get(),
+                                      mats->mat_f32.get(), mats->image->data(),
+                                      NAN, NAN);
+        }
       }
 
       // export as u8c1

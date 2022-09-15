@@ -39,7 +39,7 @@ zoomer::zoomer(QWidget *parent)
   opt.f_buffer = new double[32768];
   opt.hist_skip_cols = 0;
   opt.hist_skip_rows = 0;
-  opt.L_mean_div_L_max = 0.2;
+  opt.L_mean_div_L_max = 0.05;
   opt.newton_max_it = 5000;
   opt.q_guess = 0.6;
 

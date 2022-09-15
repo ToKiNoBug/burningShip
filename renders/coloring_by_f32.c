@@ -18,10 +18,10 @@ bool coloring_by_f32_u8c3(const mat_age *const age,
     for (int c = 0; c < burning_ship_cols; c++) {
       const int idx = r * burning_ship_cols + c;
       if (age->data[r][c] < 0) {
-        dest[idx] = copper_u8c3(smooth->data[r][c]);
+        dest[idx] = hot_u8c3(smooth->data[r][c]);
       } else {
 
-        dest[idx] = hot_u8c3(smooth->data[r][c]);
+        dest[idx] = bone_u8c3(smooth->data[r][c]);
       }
     }
   }

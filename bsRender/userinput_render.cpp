@@ -485,6 +485,11 @@ bool process_input(const int argCount, const char *const *const argVal,
       print_help();
       continue;
     }
+
+    if (i.first == "-adaptivef32") {
+      dest->self_adaptive_f32 = true;
+      continue;
+    }
   }
 
   return true;
@@ -516,6 +521,10 @@ void print_user_input(const render_options &input) {
   cout << "age_maxit = " << input.age_maxit << endl;
 
   cout << "render_maxit = " << input.render_maxit << endl;
+
+  cout << "self_adaptive_f32 = "
+       << (const char *)(input.self_adaptive_f32 ? ("true") : ("false"))
+       << endl;
 
   cout << "threadnum = " << input.threadnum << endl;
   cout << "dest_prefix = \"" << input.dest_prefix << '\"' << endl;
