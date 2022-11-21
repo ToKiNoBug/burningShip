@@ -15,6 +15,7 @@ Center in hex can be of bi-precision or quar-precision, and scale in height is t
 |  -0.7609-1.13011i   | 0xb3b1d59e2534ba138d0aa7a49485febfbc27a52ad5707df94eb39ff24e21ffbf | 3.62075e-32     |
 | -0.758907-1.12959i  | 0xa3998341cd58aef7b7bb0e818f84febfdc497cc0aac9fbf4c79b84bd2c21ffbf | 4.93038e-32     |
 | -1.7787-0.0162216i  | 0x176051f39c4fd460433441ce63c7ffbf9260172f449e48499d91532ac609f9bf | 1e-32           |
+|  -0.749924-1.0565i  | 0x4c3dc941721e19d39be98500f67ffebf0e166a83245594a9637f10d7760effbf | 1.29247e-26     |
 
 ## Format of exported binaries:
 Currently there are 3+3 formats(3 not compressed and 3 gzipped). All of them stores some kind of matrix in row-major.
