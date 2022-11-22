@@ -269,6 +269,7 @@ void smooth_age_by_q(
   if (divergent_num <= 0) {
     printf("All pixels are convergable.\n");
   } else {
+    // find q
     if (opt->L_mean_div_L_max >= 1 || opt->L_mean_div_L_max <= 0) {
       printf("The value of L_mean_div_L_max is not in range (0,1)");
       exit(1);
@@ -331,4 +332,116 @@ void smooth_age_by_q(
       }
     }
   }
+}
+
+bool find_q_newton_entropy(const double *const fx, const int16_t maxit,
+                           double q_start, double &q_dest,
+                           const int newton_maxit) {
+
+  double lnq;
+  if (q_start <= 0) {
+    double ln_q_start = 0;
+    for (int x = 1; x < maxit; x++) {
+      ln_q_start += fx[x] * std::log(x);
+    }
+    ln_q_start *= -2 / (1 - fx[0]);
+    lnq = ln_q_start;
+  } else {
+    lnq = std::log(q_start);
+  }
+  double prev_lnq = -1e9;
+  double deta_dlnq = 0, ddeta_ddlnq = 0;
+
+  int it = 0;
+
+  while (it <= newton_maxit) {
+
+    if (std::abs(lnq - prev_lnq) < 1e-5) {
+      break;
+    }
+
+    deta_dlnq = 0;
+    ddeta_ddlnq = 0;
+    const double q = std::exp(lnq);
+    for (int x = 1; x < maxit; x++) {
+      const double q2x4 = q * q * x * x * x * x;
+
+      deta_dlnq += fx[x] * (1 - q2x4) / (1 + q2x4);
+      ddeta_ddlnq += fx[x] * -4 * q2x4 / (1 + q2x4);
+    }
+
+    prev_lnq = lnq;
+    lnq = lnq - deta_dlnq / ddeta_ddlnq;
+
+    it++;
+  }
+
+  q_dest = std::exp(lnq);
+
+  if (it > newton_maxit)
+    return false;
+  else
+    return true;
+}
+
+void smooth_age_by_q_entropy(
+    const mat_age *const age,
+    const mat_age_f32 *const smoothed_by_norm2, // can be NULL
+    const int16_t bs_maxit, // the max iteration when computing fractal
+    const render_entropy_options *const opt, mat_age_f32 *const dest,
+    double *const q_dest) {
+  if (opt->f_buffer == nullptr || dest == nullptr || age == nullptr) {
+    return;
+  }
+
+  int skip_rows = std::min(opt->hist_skip_rows, burning_ship_rows / 2);
+  skip_rows = std::max(skip_rows, 0);
+  int skip_cols = std::min(opt->hist_skip_cols, burning_ship_cols / 2);
+  skip_cols = std::max(skip_cols, 0);
+
+  int divergent_num = 0;
+  make_histogram(age, bs_maxit, skip_rows, skip_cols, opt->f_buffer,
+                 &divergent_num);
+
+  double q = 0;
+  if (divergent_num <= 0) {
+    printf("All pixels are convergable.\n");
+  } else {
+    // find q
+
+    bool ok = true;
+    ok = find_q_newton_entropy(opt->f_buffer, bs_maxit, opt->q_guess, q,
+                               opt->newton_max_it);
+    if (!ok) {
+      printf("Entropy method failed to find q.\n");
+      exit(1);
+    }
+  }
+  // q *= 0.5;
+  if (q_dest != nullptr) {
+    *q_dest = q;
+  }
+
+  for (int r = 0; r < burning_ship_rows; r++) {
+    for (int c = 0; c < burning_ship_cols; c++) {
+      if (age->data[r][c] >= 0) {
+        if (smoothed_by_norm2 == nullptr) {
+          dest->data[r][c] = age_L(age->data[r][c], q);
+        } else {
+
+          dest->data[r][c] =
+              age_L(age->data[r][c] + 1 - smoothed_by_norm2->data[r][c], q);
+        }
+      } else {
+
+        if (smoothed_by_norm2 == nullptr) {
+
+          dest->data[r][c] = 0;
+        } else {
+          dest->data[r][c] = smoothed_by_norm2->data[r][c];
+        }
+      }
+    }
+  }
+  //
 }

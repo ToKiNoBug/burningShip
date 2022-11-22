@@ -34,14 +34,21 @@ zoomer::zoomer(QWidget *parent)
   // connect(ui->btn_repaint, &QPushButton::click, this, ptr);
 
   display_range();
-
-  this->opt.err_tolerence = 1e-6;
+  /*
+  opt.err_tolerence = 1e-6;
   opt.f_buffer = new double[32768];
   opt.hist_skip_cols = 0;
   opt.hist_skip_rows = 0;
   opt.L_mean_div_L_max = 0.05;
   opt.newton_max_it = 5000;
   opt.q_guess = 0.6;
+  */
+
+  opt.q_guess = -1;
+  opt.f_buffer = new double[32768];
+  opt.hist_skip_cols = 0;
+  opt.hist_skip_rows = 0;
+  opt.newton_max_it = 5000;
 
   // repaint();
 }
@@ -51,6 +58,7 @@ zoomer::~zoomer() {
   delete mat;
   delete mat_f32;
   delete norm2;
+
   delete opt.f_buffer;
 }
 
@@ -172,16 +180,22 @@ void zoomer::repaint() {
   {
     double q;
     double L_mean = -1;
+    ::smooth_age_by_q_entropy(this->mat, this->mat_f32,
+                              ui->spin_max_iter->value(), &this->opt,
+                              this->mat_f32, &q);
+    /*
     ::smooth_age_by_q(this->mat, this->mat_f32, ui->spin_max_iter->value(),
                       &this->opt, this->mat_f32, &q, &L_mean);
+
+    */
     if (!std::isfinite(q)) {
       cout << "Error! q is " << q << endl;
       exit(1);
     }
-
+    /*
     cout << "q = " << q << ", L_mean = " << L_mean
          << ", h_max = " << ::max_L_mean(ui->spin_max_iter->value(), &this->opt)
-         << endl;
+         << endl;*/
 
     this->opt.q_guess = q;
 

@@ -68,6 +68,21 @@ void smooth_age_by_q(
     const render_by_q_options *const opt, mat_age_f32 *const dest,
     double *const q_dest, double *const L_mean_dest);
 
+typedef struct {
+  int newton_max_it;
+  double q_guess; // q_guess<=0 for invalid value
+  double *f_buffer;
+  int hist_skip_rows;
+  int hist_skip_cols;
+} render_entropy_options;
+
+void smooth_age_by_q_entropy(
+    const mat_age *const age,
+    const mat_age_f32 *const smoothed_by_norm2, // can be NULL
+    const int16_t bs_maxit, // the max iteration when computing fractal
+    const render_entropy_options *const opt, mat_age_f32 *const dest,
+    double *const q_dest);
+
 #ifdef __cplusplus
 }
 

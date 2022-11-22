@@ -36,7 +36,8 @@ private:
   cplx_union_d minmin;
   cplx_union_d maxmax;
 
-  render_by_q_options opt;
+  // render_by_q_options opt;
+  render_entropy_options opt;
 
   std::mutex lock;
 
