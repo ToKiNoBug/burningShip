@@ -17,8 +17,7 @@ endif()
 find_package(Boost COMPONENTS json)
 
 if(NOT BOOST_FOUND)
-    set(BOOST_ROOT D:/CppLibs/libBoost-1.79.0/lib/cmake)
-
+    # set(BOOST_ROOT D:/CppLibs/libBoost-1.79.0/lib/cmake)
     find_package(Boost COMPONENTS REQUIRED json)
 endif()
 

@@ -16,7 +16,7 @@
 
 int main(int argc, char **argv) {
 
-  omp_set_num_threads(4);
+  omp_set_num_threads(20);
 
   cplx_d Center = -0.591827 - 1.05382i;
 
