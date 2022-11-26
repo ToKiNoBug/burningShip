@@ -7,7 +7,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 if(NOT DEFINED QT_DIR)
-    set(CMAKE_PREFIX_PATH "D:/ProgramFiles/Qt/Qt/Qt6.4.0-gcc12-shared")
+    #set(CMAKE_PREFIX_PATH "D:/ProgramFiles/Qt/Qt/Qt6.4.0-gcc12-shared")
     set(QT_DIR ${CMAKE_PREFIX_PATH}/lib/cmake/Qt6)
     set(QT_QMAKE_EXECUTABLE ${CMAKE_PREFIX_PATH}/bin/qmake.exe)
 endif()

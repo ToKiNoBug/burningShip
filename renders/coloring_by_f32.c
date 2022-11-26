@@ -41,10 +41,13 @@ bool coloring_by_f32_u8c3_more(const mat_age *const age,
   if (dest_u8c3 == NULL) {
     return false;
   }
-
+#ifdef WIN32
   const bool compute_lower = _isnanf(__lower_bound);
   const bool compute_upper = _isnanf(__upper_bound);
-
+#else
+  const bool compute_lower = isnanf(__lower_bound);
+  const bool compute_upper = isnanf(__upper_bound);
+#endif
   float lower_bound, upper_bound;
 
   bool is_buffer_provided_outside = false;

@@ -34,7 +34,7 @@ bool create_structs(FILE **file, png_struct **png, png_info **info,
   if (filename == NULL || strlen(filename) <= 0) {
     return false;
   }
-
+#ifdef WIN32
   errno_t err = fopen_s(file, filename, "wb");
 
   if (*file == NULL) {
@@ -42,7 +42,13 @@ bool create_structs(FILE **file, png_struct **png, png_info **info,
            err);
     return false;
   }
-
+#else
+  *file=fopen(filename,"wb");
+  if(*file==NULL) {
+    printf("Failed to file struct of file %s.\n", filename);
+    return false;
+  }
+#endif
   *png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
   if (*png == NULL) {

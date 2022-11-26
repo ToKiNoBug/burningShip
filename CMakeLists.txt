@@ -14,7 +14,14 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/compile_commands.json)
     file(REMOVE ${CMAKE_SOURCE_DIR}/compile_commands.json)
 endif()
 
+
+set(CMAKE_PREFIX_PATH "/home/jeremiah/Qt/libQt/Qt6.4.0-gcc12-shared")
+
+include(./add_compiler_path_to_prefix.cmake)
+
 find_package(Boost COMPONENTS json)
+
+
 
 if(NOT BOOST_FOUND)
     # set(BOOST_ROOT D:/CppLibs/libBoost-1.79.0/lib/cmake)
@@ -36,6 +43,6 @@ add_subdirectory(colormaps)
 add_subdirectory(burning_ship)
 add_subdirectory(renders)
 add_subdirectory(test_burning_ship)
-add_subdirectory(zoomer)
 add_subdirectory(bsCompute)
 add_subdirectory(bsRender)
+#add_subdirectory(zoomer)

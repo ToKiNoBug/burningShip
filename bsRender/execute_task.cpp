@@ -17,6 +17,8 @@
 
 #include <omp.h>
 
+#include <memory.h>
+
 using std::cout, std::endl;
 
 using std::vector, std::string, std::unique_ptr;
@@ -45,7 +47,7 @@ size_t read_matrix(const char *const filename, void *const dest,
     return ret;
   } else {
     FILE *file = NULL;
-    fopen_s(&file, filename, "rb");
+    file=fopen(filename, "rb");
 
     if (file == NULL) {
       return 0;

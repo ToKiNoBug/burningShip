@@ -284,7 +284,7 @@ bool process_user_input(const int argC, const char *const *const argV,
       FILE *file = NULL;
       const std::string test_filename =
           i.second.back() + "frame-0_maxit-1000.bs_frame";
-      ::fopen_s(&file, test_filename.data(), "wb");
+      file=fopen(test_filename.data(), "wb");
 
       if (file == NULL) {
         cout << "Invalid filenameprefix \"" << i.second.back()

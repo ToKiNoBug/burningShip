@@ -571,7 +571,7 @@ bool check_sizes_file(const uint8_t __size_of_bs_float,
 bool check_size_nocompress(const char *const filename) {
   FILE *file = NULL;
 
-  ::fopen_s(&file, filename, "rb");
+  file=fopen(filename, "rb");
 
   if (file == NULL) {
     cout << "Failed to open file " << filename << endl;

@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
   {
     int temp;
     printf("max iterations = ");
-    scanf_s("%d", &temp);
+    scanf("%d", &temp);
 
     if (temp > 0 && temp < 32767) {
       max_it = temp;
@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
 
     printf("\n\nPlease set the value of mean_L (0.25 default) : ");
 
-    bool is_input_valid = (scanf_s("%f", &temp) == 1);
+    bool is_input_valid = (scanf("%f", &temp) == 1);
 
     if (temp <= 0 || temp >= 1) {
       is_input_valid = false;

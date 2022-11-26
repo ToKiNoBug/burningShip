@@ -34,6 +34,7 @@ add_library(burning_ship_lib STATIC
 target_link_libraries(burning_ship_lib OpenMP::OpenMP_C z quadmath)
 
 if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-target_compile_options(burning_ship_lib PRIVATE -Ofast)
-
+    target_compile_options(burning_ship_lib PRIVATE -Ofast)
 endif()
+
+target_compile_options(burning_ship_lib PUBLIC -mavx -mavx2)
