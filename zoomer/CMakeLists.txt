@@ -7,16 +7,17 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 if(NOT DEFINED QT_DIR)
-    #set(CMAKE_PREFIX_PATH "D:/ProgramFiles/Qt/Qt/Qt6.4.0-gcc12-shared")
+    set(CMAKE_PREFIX_PATH "D:/ProgramFiles/Qt/Qt/Qt6.4.0-gcc12-shared")
     set(QT_DIR ${CMAKE_PREFIX_PATH}/lib/cmake/Qt6)
-    set(QT_QMAKE_EXECUTABLE ${CMAKE_PREFIX_PATH}/bin/qmake.exe)
+
+    # set(QT_QMAKE_EXECUTABLE ${CMAKE_PREFIX_PATH}/bin/qmake.exe)
 endif()
 
 include_directories(../burning_ship)
 include_directories(../colormaps)
 include_directories(../renders)
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
+find_package(QT NAMES Qt6 COMPONENTS Widgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
 
 set(zoomer_header_files

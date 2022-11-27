@@ -14,7 +14,7 @@ Center in hex can be of bi-precision or quar-precision, and scale in height is t
 | -0.648157-0.899817i | 0xd21580ba4ea4b56dc5cbd83adb4bfebf36c5b5eb9e68eceab798b0d7b4ccfebf | 4.93038e-32     |
 |  -0.7609-1.13011i   | 0xb3b1d59e2534ba138d0aa7a49485febfbc27a52ad5707df94eb39ff24e21ffbf | 3.62075e-32     |
 | -0.758907-1.12959i  | 0xa3998341cd58aef7b7bb0e818f84febfdc497cc0aac9fbf4c79b84bd2c21ffbf | 4.93038e-32     |
-| -1.7787-0.0162216i  | 0x176051f39c4fd460433441ce63c7ffbf9260172f449e48499d91532ac609f9bf | 1e-32           |
+| -1.7787-0.0162216i  | 0xd69d24f39c4fd460433441ce63c7ffbf2f9426dd439e48499d91532ac609f9bf | 1.00028e-32     |
 |  -0.749924-1.0565i  | 0x4c3dc941721e19d39be98500f67ffebf0e166a83245594a9637f10d7760effbf | 1.29247e-26     |
 
 ## Format of exported binaries:
@@ -40,4 +40,8 @@ bsTaskGen -centerhex 0x00000000000000000000000000000000 -framecount 16 -compress
 bsTaskGen -centerhex 0xdddb3abfbc71ac5c49c65fea032ffebfbc022feb8231c7f4c255f375c70dffbf -framecount 2 -compress -preview -zoomspeed 4 -j 4 -mode norm2 -filenameprefix test/ -maxit 255
 
 bsRender -rendermethod age_norm2_q -pngprefix age_norm2_q_ -adaptivef32 -lightness 0.5
+```
+
+```
+./bsTaskGen -centerhex 0xd69d24f39c4fd460433441ce63c7ffbf2f9426dd439e48499d91532ac609f9bf -compress -preview -zoomspeed 2 -j 20 -mode norm2 -filenameprefix ./burning_ship_1/ -maxit 32700 -framecount 108
 ```

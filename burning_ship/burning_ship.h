@@ -28,6 +28,12 @@ typedef double _Complex bs_cplx;
 
 #endif
 
+#ifdef WIN32
+    #define aligned_alloc _aligned_malloc
+#else
+
+#endif
+
 #define size_of_bs_float sizeof(bs_float)
 
 // typedef __float128 bs_float;

@@ -16,12 +16,8 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/compile_commands.json)
     file(REMOVE ${CMAKE_SOURCE_DIR}/compile_commands.json)
 endif()
 
-
-#set(CMAKE_PREFIX_PATH "/home/jeremiah/Qt/libQt/Qt6.4.0-gcc12-shared")
-
+# set(CMAKE_PREFIX_PATH "/home/jeremiah/Qt/libQt/Qt6.4.0-gcc12-shared")
 find_package(Boost COMPONENTS json)
-
-
 
 if(NOT BOOST_FOUND)
     # set(BOOST_ROOT D:/CppLibs/libBoost-1.79.0/lib/cmake)
@@ -37,8 +33,8 @@ if(NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     add_compile_definitions(BS_Optimize_on)
 endif()
 
-# add_compile_definitions(burning_ship_rows=2160)
-# add_compile_definitions(burning_ship_cols=3840)
+add_compile_definitions(burning_ship_rows=2160)
+add_compile_definitions(burning_ship_cols=3840)
 add_subdirectory(colormaps)
 add_subdirectory(burning_ship)
 add_subdirectory(renders)
