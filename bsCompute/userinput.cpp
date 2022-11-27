@@ -1,12 +1,16 @@
 #include "userinput.h"
-#include "burning_ship.h"
+
+#include <omp.h>
+#include <stdio.h>
+
 #include <cmath>
 #include <cstring>
 #include <iostream>
-#include <omp.h>
-#include <stdio.h>
 #include <unordered_map>
 #include <vector>
+
+#include "burning_ship.h"
+
 
 using ::std::cout, ::std::endl, ::std::vector, ::std::string;
 
@@ -16,7 +20,7 @@ const std::unordered_set<string> keywords = {
     "-preview"};
 
 void print_help() {
-  cout << "User guide :\nbsCompute -keywords [value]\n";
+  cout << "User guide :\nbsTaskGen -keywords [value]\n";
 
   cout << "\n  -version\n";
   cout << "    Display detailed information of this executable.\n";
@@ -55,7 +59,7 @@ void print_help() {
   cout << "    Default value is empty string.\n";
 
   cout << "\n  -compress\n";
-  cout << "    Tells bsCompute to generate gzip compressed files. This "
+  cout << "    Tells bsTaskGen to generate gzip compressed files. This "
           "keyword doesn\'t require a parameter.\n";
 
   cout << "\n  -mode [ageonly|norm2|cplxc3]\n";
@@ -94,8 +98,7 @@ int hex_to_bin(const char *src, uint8_t *dest) {
   if (src == nullptr || dest == nullptr) {
     return 0;
   }
-  if (std::strlen(src) <= 0)
-    return 0;
+  if (std::strlen(src) <= 0) return 0;
   if (std::strlen(src) % 2 == 1) {
     return 0;
   }
@@ -284,7 +287,7 @@ bool process_user_input(const int argC, const char *const *const argV,
       FILE *file = NULL;
       const std::string test_filename =
           i.second.back() + "frame-0_maxit-1000.bs_frame";
-      file=fopen(test_filename.data(), "wb");
+      file = fopen(test_filename.data(), "wb");
 
       if (file == NULL) {
         cout << "Invalid filenameprefix \"" << i.second.back()
@@ -359,7 +362,6 @@ bool process_user_input(const int argC, const char *const *const argV,
 }
 
 void print_user_input(const user_input &input) {
-
   cout << "Zooming center = " << (double)::bs_real(input.center);
   if (::bs_imag(input.center) >= 0) {
     cout << "+";
@@ -375,15 +377,15 @@ void print_user_input(const user_input &input) {
   cout << "compress = " << (const char *)(input.compress ? "true" : "false")
        << endl;
   switch (input.mode) {
-  case compute_mode::age_only:
-    cout << "export matrix of int16_t only." << endl;
-    break;
-  case compute_mode::with_norm2:
-    cout << "export matrix of int16_t and norm2." << endl;
-    break;
-  case compute_mode::with_cplx_c3:
-    cout << "export matrix of int16_t and cplx_c3." << endl;
-    break;
+    case compute_mode::age_only:
+      cout << "export matrix of int16_t only." << endl;
+      break;
+    case compute_mode::with_norm2:
+      cout << "export matrix of int16_t and norm2." << endl;
+      break;
+    case compute_mode::with_cplx_c3:
+      cout << "export matrix of int16_t and cplx_c3." << endl;
+      break;
   }
   cout << "preview = " << (const char *)(input.preview ? "true" : "false")
        << endl;
@@ -431,14 +433,14 @@ void user_input_to_json(const user_input &input,
   obj["preview"] = input.preview;
 
   switch (input.mode) {
-  case compute_mode::age_only:
-    obj["mode"] = "ageonly";
-    break;
-  case compute_mode::with_norm2:
-    obj["mode"] = "norm2";
-    break;
-  case compute_mode::with_cplx_c3:
-    obj["mode"] = "cplxc3";
-    break;
+    case compute_mode::age_only:
+      obj["mode"] = "ageonly";
+      break;
+    case compute_mode::with_norm2:
+      obj["mode"] = "norm2";
+      break;
+    case compute_mode::with_cplx_c3:
+      obj["mode"] = "cplxc3";
+      break;
   }
 }

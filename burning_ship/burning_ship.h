@@ -4,7 +4,7 @@
 // Uncomment this line to generate mandelbrot fractal
 // #define BS_MANDELBROT
 
-#define BS_FLOAT128
+//#define BS_FLOAT128
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -58,15 +58,21 @@ bs_float bs_imag(cplx_d v);
 #define burning_ship_cols 480
 #endif
 
-typedef struct {
+#ifdef __cplusplus
+#define ALIGN_AS_32 alignas(32)
+#else
+#define ALIGN_AS_32
+#endif
+
+typedef struct ALIGN_AS_32 {
   int16_t data[burning_ship_rows][burning_ship_cols];
 } mat_age;
 
-typedef struct {
+typedef struct ALIGN_AS_32 {
   bs_float norm2[burning_ship_rows][burning_ship_cols];
 } norm2_matc1;
 
-typedef struct {
+typedef struct ALIGN_AS_32 {
   cplx_d c3[burning_ship_rows][burning_ship_cols][3];
 } cplx_matc3;
 

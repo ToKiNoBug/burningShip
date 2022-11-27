@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(burningShip VERSION 0.1.0)
 
+include(./add_compiler_path_to_prefix.cmake)
+
 include(CTest)
 enable_testing()
 
@@ -15,9 +17,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/compile_commands.json)
 endif()
 
 
-set(CMAKE_PREFIX_PATH "/home/jeremiah/Qt/libQt/Qt6.4.0-gcc12-shared")
-
-include(./add_compiler_path_to_prefix.cmake)
+#set(CMAKE_PREFIX_PATH "/home/jeremiah/Qt/libQt/Qt6.4.0-gcc12-shared")
 
 find_package(Boost COMPONENTS json)
 

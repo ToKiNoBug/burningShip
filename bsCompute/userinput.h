@@ -2,12 +2,13 @@
 #define BSCOMPUTE_USERINPUT_H
 
 #include <burning_ship.h>
+
+#include <boost/json.hpp>
 #include <string>
 #include <thread>
 #include <unordered_set>
 #include <vector>
 
-#include <boost/json.hpp>
 
 extern const std::unordered_set<::std::string> keywords;
 
@@ -30,6 +31,13 @@ struct user_input {
   bool preview{false};
 };
 
+/*
+struct user_input_2 : public user_input{
+  std::vector<std::string> target_files;
+};
+
+*/
+
 void print_help();
 
 bool process_user_input(const int argC, const char *const *const argV,
@@ -40,4 +48,6 @@ void print_user_input(const user_input &input);
 void user_input_to_json(const user_input &input,
                         boost::json::object *const obj);
 
-#endif // BSCOMPUTE_USERINPUT_H
+int hex_to_bin(const char *src, uint8_t *dest);
+
+#endif  // BSCOMPUTE_USERINPUT_H

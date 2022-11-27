@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 
   // iterate(C, NULL);
 
-  mat_age *const img = malloc(sizeof(mat_age));
+  mat_age *const img = aligned_alloc(32,sizeof(mat_age));
 
   if (img == NULL) {
     printf("Failed to allocate size for img\n");

@@ -1,6 +1,8 @@
 #include "burning_ship.h"
 #include <complex.h>
 
+#include <stddef.h>
+
 bs_range_wind to_range_wind(const bs_center_wind cw) {
   bs_range_wind rw;
   cplx_union_d *rw_minmin = (cplx_union_d *)&rw.minmin;
