@@ -11,7 +11,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif  // #ifdef __cplusplus
+#endif // #ifdef __cplusplus
 
 #ifdef BS_FLOAT128
 
@@ -29,7 +29,7 @@ typedef double _Complex bs_cplx;
 #endif
 
 #ifdef WIN32
-    #define aligned_alloc _aligned_malloc
+#define aligned_alloc(alignment, size) _aligned_malloc(size, alignment)
 #else
 
 #endif
@@ -159,6 +159,6 @@ static_assert(sizeof(bs_cplx) == 2 * sizeof(bs_float), "Size check failed!");
 static_assert(sizeof(bs_float) == sizeof(bs_uint), "Size check failed!");
 #endif
 
-#endif  // #ifdef __cplusplus
+#endif // #ifdef __cplusplus
 
-#endif  // BURNING_SHIP_H
+#endif // BURNING_SHIP_H

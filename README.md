@@ -45,3 +45,8 @@ bsRender -rendermethod age_norm2_q -pngprefix age_norm2_q_ -adaptivef32 -lightne
 ```
 ./bsTaskGen -centerhex 0xd69d24f39c4fd460433441ce63c7ffbf2f9426dd439e48499d91532ac609f9bf -compress -preview -zoomspeed 2 -j 20 -mode norm2 -filenameprefix ./burning_ship_1/ -maxit 32700 -framecount 108
 ```
+
+
+```
+./bsTaskGen -centerhex 0xd69d24f39c4fd460433441ce63c7ffbf2f9426dd439e48499d91532ac609f9bf -compress -preview -zoomspeed 2 -j 20 -mode norm2 -filenameprefix ./burning_ship_1/ -maxit 32700 -framecount 110 -startscale 16
+```
