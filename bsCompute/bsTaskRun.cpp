@@ -1,5 +1,6 @@
 #include <omp.h>
 
+#include <atomic>
 #include <boost/json.hpp>
 #include <boost/json/array.hpp>
 #include <boost/json/object.hpp>
@@ -11,19 +12,24 @@
 #include <iostream>
 #include <string>
 #include <string_view>
+#include <thread>
 
 #include "burning_ship.h"
 #include "renders.h"
 #include "userinput.h"
+
+std::atomic<bool> terminate_after_current_frame = false;
 
 using ::std::cout, ::std::endl, ::std::vector, ::std::string;
 
 user_input json_to_user_input(std::string_view jsonfilename,
                               std::vector<uint8_t>* const is_frame_computed);
 
+void receive_input();
+
 int main(int argC, char** argV) {
   const char* task_filename = "./compute_options.json";
-
+  // process cmdline input
   if (argC == 2) {
     task_filename = argV[1];
   }
@@ -40,12 +46,34 @@ int main(int argC, char** argV) {
   }
 
   cout << "Task json parsed without error." << endl;
-  cout << tasks_to_do << " tasks to compute." << endl;
 
   if (tasks_to_do <= 0) {
+    cout << "No work to do. All tasks finished." << endl;
     return 0;
   }
+  cout << tasks_to_do << " tasks to compute." << endl;
 
+  cout << "Computation will start. Input \"pause\" and bsTaskRun will pause "
+          "once "
+          "current frame is finished. If you want to stop immediately, press "
+          "ctrl+C."
+       << endl;
+
+  std::thread wait_for_user_input(receive_input);
+
+  while (true) {
+    // compute frames
+    sleep(5);
+    cout << "ooooo" << endl;
+
+    if (::terminate_after_current_frame) {
+      break;
+    }
+  }
+
+  wait_for_user_input.join();
+
+  cout << "Computation finished or paused." << endl;
   return 0;
 }
 
@@ -270,4 +298,30 @@ user_input json_to_user_input(std::string_view jsonfilename,
   }
 
   return input;
+}
+
+void receive_input() {
+  std::string str;
+  while (true) {
+    if (terminate_after_current_frame) {
+      // if the main loop set it to true, all tasks are finished and we don't
+      // need to wait for input.
+      break;
+    }
+    std::cin >> str;
+
+    if (str != "pause") {
+      cout << "Unknown instruction\"" << str
+           << "\" during computation. Wait for "
+              "another "
+              "input."
+           << endl;
+    } else {
+      cout << "Computation will pause once current frame is finished. For "
+              "instant abort, press ctrl+C."
+           << endl;
+      terminate_after_current_frame = true;
+      break;
+    }
+  }
 }
