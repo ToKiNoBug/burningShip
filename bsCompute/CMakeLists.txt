@@ -19,11 +19,10 @@ message("BOOST_INCLUDE_DIR = " ${BOOST_INCLUDE_DIR})
 include_directories(${BOOST_INCLUDE_DIR})
 
 
-add_executable(bsCompute 
-
-    userinput.h
-    userinput.cpp
-    bsCompute.cpp)
+#add_executable(bsCompute 
+#    userinput.h
+#    userinput.cpp
+#    bsCompute.cpp)
 
 add_executable(bsTaskGen
     userinput.h
@@ -35,12 +34,15 @@ add_executable(bsTaskRun
     userinput.cpp
     bsTaskRun.cpp)
 
-target_link_libraries(bsCompute PRIVATE burning_ship_lib colormaps burning_ship_render Boost::json)
+#target_link_libraries(bsCompute PRIVATE burning_ship_lib colormaps burning_ship_render Boost::json)
 
 
 target_link_libraries(bsTaskGen PRIVATE burning_ship_lib colormaps burning_ship_render Boost::json)
-
-target_link_libraries(bsTaskRun PRIVATE burning_ship_lib colormaps burning_ship_render Boost::json)
-
-install(TARGETS bsCompute
+install(TARGETS bsTaskGen
     RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+target_link_libraries(bsTaskRun PRIVATE burning_ship_lib colormaps burning_ship_render Boost::json)
+install(TARGETS bsTaskRun
+    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+
+#install(TARGETS bsCompute
+#    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})

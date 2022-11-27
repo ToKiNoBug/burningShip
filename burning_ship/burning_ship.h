@@ -4,14 +4,14 @@
 // Uncomment this line to generate mandelbrot fractal
 // #define BS_MANDELBROT
 
-//#define BS_FLOAT128
+#define BS_FLOAT128
 
 #include <stdbool.h>
 #include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
-#endif // #ifdef __cplusplus
+#endif  // #ifdef __cplusplus
 
 #ifdef BS_FLOAT128
 
@@ -153,6 +153,6 @@ static_assert(sizeof(bs_cplx) == 2 * sizeof(bs_float), "Size check failed!");
 static_assert(sizeof(bs_float) == sizeof(bs_uint), "Size check failed!");
 #endif
 
-#endif // #ifdef __cplusplus
+#endif  // #ifdef __cplusplus
 
-#endif // BURNING_SHIP_H
+#endif  // BURNING_SHIP_H
