@@ -1,23 +1,21 @@
-#include "userinput_render.h"
 #include <burning_ship.h>
-#include <filesystem>
-
+#include <colors.h>
+#include <memory.h>
+#include <omp.h>
+#include <renders.h>
 #include <stdio.h>
 #include <zlib.h>
 
 #include <array>
 #include <cmath>
-#include <colors.h>
 #include <ctime>
+#include <filesystem>
 #include <iostream>
 #include <memory>
 #include <mutex>
-#include <renders.h>
 #include <unordered_map>
 
-#include <omp.h>
-
-#include <memory.h>
+#include "userinput_render.h"
 
 using std::cout, std::endl;
 
@@ -47,7 +45,7 @@ size_t read_matrix(const char *const filename, void *const dest,
     return ret;
   } else {
     FILE *file = NULL;
-    file=fopen(filename, "rb");
+    file = fopen(filename, "rb");
 
     if (file == NULL) {
       return 0;
@@ -65,10 +63,13 @@ size_t read_matrix(const char *const filename, void *const dest,
 struct mat_ptrs {
   mat_ptrs(::render_method rm = render_method::age_linear,
            const size_t maxit = 3)
-      : mat_int16(new mat_age), mat_norm2(new norm2_matc1),
+      : mat_int16(new mat_age),
+        mat_norm2(new norm2_matc1),
         mat_f32((rm != render_method::age_linear) ? (new mat_age_f32)
                                                   : nullptr),
-        mat_cplxc3(nullptr), f(maxit), row_ptrs_cache(burning_ship_rows),
+        mat_cplxc3(nullptr),
+        f(maxit),
+        row_ptrs_cache(burning_ship_rows),
         image(new ::std::array<pixel_u8c3,
                                burning_ship_rows * burning_ship_cols>) {
     if (mat_int16 == nullptr) {
@@ -125,14 +126,14 @@ struct mat_ptrs {
 };
 
 class obj_pool {
-private:
+ private:
   // std::vector<std::pair<mat_ptrs, int>> pool;
   std::unordered_map<mat_ptrs *, bool> pool;
   const render_method rm;
   const size_t maxit;
   std::mutex lock;
 
-public:
+ public:
   explicit obj_pool(const size_t size, const render_method rm,
                     const size_t maxit)
       : rm(rm), maxit(maxit) {
@@ -177,9 +178,10 @@ public:
   }
 };
 
+enum class q_compute_method : uint8_t { lightness, entropy };
+
 // start to render
 void execute_rendering(const render_options &input) {
-
   obj_pool pool(input.threadnum + 2, input.method, input.age_maxit);
 
   const int max_digits = std::ceil(std::log10(input.png_count()) + 1e-2);
@@ -196,7 +198,6 @@ void execute_rendering(const render_options &input) {
 
 #pragma omp parallel for schedule(dynamic)
   for (int frameidx = 0; frameidx < input.sources.size(); frameidx++) {
-
     mat_ptrs *const mats = pool.allocate(frameidx);
 
     const auto &sources = input.sources[frameidx];
@@ -222,36 +223,55 @@ void execute_rendering(const render_options &input) {
     bool render_age_only;
     bool write_gray;
     bool use_q_method;
+    q_compute_method q_detail_method;
 
     switch (input.method) {
-    case render_method::age_linear:
-      smooth_norm2 = false;
-      color_by_norm2 = false;
-      write_gray = true;
-      render_age_only = true;
-      use_q_method = false;
-      break;
-    case render_method::age_norm2_q:
-      smooth_norm2 = true;
-      color_by_norm2 = false;
-      write_gray = false;
-      render_age_only = false;
-      use_q_method = true;
-      break;
-    case render_method::norm2_only:
-      smooth_norm2 = true;
-      color_by_norm2 = true;
-      write_gray = false;
-      render_age_only = false;
-      use_q_method = false;
-      break;
-    case render_method::age_q:
-      smooth_norm2 = false;
-      color_by_norm2 = false;
-      write_gray = false;
-      render_age_only = true;
-      use_q_method = true;
-      break;
+      case render_method::age_linear:
+        smooth_norm2 = false;
+        color_by_norm2 = false;
+        write_gray = true;
+        render_age_only = true;
+        use_q_method = false;
+        break;
+      case render_method::age_norm2_q:
+        smooth_norm2 = true;
+        color_by_norm2 = false;
+        write_gray = false;
+        render_age_only = false;
+        use_q_method = true;
+        q_detail_method = q_compute_method::lightness;
+        break;
+      case render_method::norm2_only:
+        smooth_norm2 = true;
+        color_by_norm2 = true;
+        write_gray = false;
+        render_age_only = false;
+        use_q_method = false;
+        break;
+      case render_method::age_q:
+        smooth_norm2 = false;
+        color_by_norm2 = false;
+        write_gray = false;
+        render_age_only = true;
+        use_q_method = true;
+        q_detail_method = q_compute_method::lightness;
+        break;
+      case render_method::entropy_age:
+        smooth_norm2 = false;
+        color_by_norm2 = false;
+        write_gray = false;
+        render_age_only = true;
+        use_q_method = true;
+        q_detail_method = q_compute_method::entropy;
+        break;
+      case render_method::entropy_age_norm2:
+        smooth_norm2 = true;
+        color_by_norm2 = true;
+        write_gray = false;
+        render_age_only = false;
+        use_q_method = true;
+        q_detail_method = q_compute_method::entropy;
+        break;
     }
 
     // render the frame
@@ -270,21 +290,31 @@ void execute_rendering(const render_options &input) {
                            mats->image->data());
     }
 
-    thread_local ::render_by_q_options q_opts;
+    thread_local ::render_by_q_options q_opts_atanx2;
+    thread_local ::render_entropy_options q_opts_entropy;
 
     if (use_q_method) {
-      // do no rendering here cause rendering can't be done ahead of time.
-      // set the value of q_opts.
-      q_opts.newton_max_it = input.render_maxit;
-      q_opts.err_tolerence = 1e-5;
-      q_opts.f_buffer = mats->f.data();
-      q_opts.L_mean_div_L_max = input.lightness;
-      // don't guess at the first time.
-      q_opts.q_guess = -1;
+      switch (q_detail_method) {
+        case q_compute_method::lightness:
+          // do no rendering here cause rendering can't be done ahead of time.
+          // set the value of q_opts_atanx2.
+          q_opts_atanx2.newton_max_it = input.render_maxit;
+          q_opts_atanx2.err_tolerence = 1e-5;
+          q_opts_atanx2.f_buffer = mats->f.data();
+          q_opts_atanx2.L_mean_div_L_max = input.lightness;
+          // don't guess at the first time.
+          q_opts_atanx2.q_guess = -1;
 
-      // these members are determined by skip_rows and skip_cols;
-      // q_opts.hist_skip_cols;
-      // q_opts.hist_skip_rows;
+          // these members are determined by skip_rows and skip_cols;
+          // q_opts_atanx2.hist_skip_cols;
+          // q_opts_atanx2.hist_skip_rows;
+          break;
+        case q_compute_method::entropy:
+          q_opts_entropy.newton_max_it = input.render_maxit;
+          q_opts_entropy.q_guess = -1;
+          q_opts_entropy.f_buffer = mats->f.data();
+          break;
+      }
     }
 
     // render
@@ -320,14 +350,30 @@ void execute_rendering(const render_options &input) {
       bool ok = false;
 
       if (use_q_method) {
-        q_opts.hist_skip_cols = skip_cols;
-        q_opts.hist_skip_rows = skip_rows;
         double q;
-        ::smooth_age_by_q(mats->mat_int16.get(),
-                          (render_age_only) ? (nullptr) : (mats->mat_f32.get()),
-                          input.age_maxit, &q_opts, mats->mat_f32.get(), &q,
-                          nullptr);
-        q_opts.q_guess = q;
+        // compute q with detailed method
+        switch (q_detail_method) {
+          case q_compute_method::lightness:
+            q_opts_atanx2.hist_skip_cols = skip_cols;
+            q_opts_atanx2.hist_skip_rows = skip_rows;
+            ::smooth_age_by_q(
+                mats->mat_int16.get(),
+                (render_age_only) ? (nullptr) : (mats->mat_f32.get()),
+                input.age_maxit, &q_opts_atanx2, mats->mat_f32.get(), &q,
+                nullptr);
+            q_opts_atanx2.q_guess = q;
+            break;
+          case q_compute_method::entropy:
+            q_opts_entropy.hist_skip_cols = skip_cols;
+            q_opts_entropy.hist_skip_rows = skip_rows;
+            ::smooth_age_by_q_entropy(
+                mats->mat_int16.get(),
+                (render_age_only) ? (nullptr) : (mats->mat_f32.get()),
+                input.age_maxit, &q_opts_entropy, mats->mat_f32.get(), &q);
+            q_opts_entropy.q_guess = q;
+            break;
+        }
+
         if (!input.self_adaptive_f32) {
           ::coloring_by_f32_u8c3(mats->mat_int16.get(), mats->mat_f32.get(),
                                  mats->image->data());

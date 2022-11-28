@@ -11,11 +11,14 @@ const ::std::unordered_set<::std::string> keywords(
      "-lightness", "-rendermaxit", "-help", "-adaptivef32"});
 
 enum class render_method {
-  age_linear, // map iteration times to [0,1] linearly
-  norm2_only, // map norm2 to [0,1]
-  age_q,      // map iteration times  to [0,1] by q-method
-  age_norm2_q // map norm2 to [0,1] and then map (age+1-norm2_in_[0,1]) to [0,1]
-              // by q-method
+  age_linear,   // map iteration times to [0,1] linearly
+  norm2_only,   // map norm2 to [0,1]
+  age_q,        // map iteration times  to [0,1] by q-method
+  age_norm2_q,  // map norm2 to [0,1] and then map (age+1-norm2_in_[0,1]) to
+                // [0,1] by q-method
+  entropy_age,  // map iteration times to [0,1] by entropy-q-method
+  entropy_age_norm2  // map norm2 to [0,1] and then map (age+1-norm2_in_[0,1])
+                     // to [0,1] by entropy-q-method
 };
 
 struct binary_files {
@@ -30,7 +33,7 @@ struct binary_files {
 };
 
 struct render_options {
-public:
+ public:
   int fps{60};
   render_method method{render_method::age_linear};
   ::std::vector<binary_files> sources;
@@ -73,4 +76,4 @@ size_t read_matrix(const char *const filename, void *const dest,
 
 void execute_rendering(const render_options &);
 
-#endif // BSRENDER_USERINPUT_RENDER_H
+#endif  // BSRENDER_USERINPUT_RENDER_H
