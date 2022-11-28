@@ -65,8 +65,10 @@ struct mat_ptrs {
            const size_t maxit = 3)
       : mat_int16(new mat_age),
         mat_norm2(new norm2_matc1),
-        mat_f32((rm != render_method::age_linear) ? (new mat_age_f32)
-                                                  : nullptr),
+        mat_f32_age_norm2((rm != render_method::age_linear) ? (new mat_age_f32)
+                                                            : nullptr),
+        mat_f32_q_reflected(
+            (rm != render_method::age_linear) ? (new mat_age_f32) : nullptr),
         mat_cplxc3(nullptr),
         f(maxit),
         row_ptrs_cache(burning_ship_rows),
@@ -86,12 +88,18 @@ struct mat_ptrs {
       memset(&mat_norm2->norm2[0][0], 0, sizeof(norm2_matc1));
     }
 
-    if ((rm != render_method::age_linear) && (mat_f32 == nullptr)) {
-      cout << "Failed to allocate memory for mat_f32." << endl;
+    if ((rm != render_method::age_linear) && (mat_f32_age_norm2 == nullptr)) {
+      cout << "Failed to allocate memory for mat_f32_age_norm2." << endl;
       exit(1);
     }
+    if ((rm != render_method::age_linear) && (mat_f32_q_reflected == nullptr)) {
+      cout << "Failed to allocate memory for mat_f32_q_reflected ." << endl;
+      exit(1);
+    }
+
     if (rm != render_method::age_linear) {
-      memset(&mat_f32->data[0][0], 0, sizeof(mat_age_f32));
+      memset(&mat_f32_age_norm2->data[0][0], 0, sizeof(mat_age_f32));
+      memset(&mat_f32_q_reflected->data[0][0], 0, sizeof(mat_age_f32));
     }
 
     if (f.data() == nullptr) {
@@ -117,7 +125,9 @@ struct mat_ptrs {
 
   unique_ptr<::mat_age> mat_int16;
   unique_ptr<::norm2_matc1> mat_norm2;
-  unique_ptr<::mat_age_f32> mat_f32;
+  /// The float32 matrix that stored
+  unique_ptr<::mat_age_f32> mat_f32_age_norm2;
+  unique_ptr<::mat_age_f32> mat_f32_q_reflected;
   unique_ptr<::cplx_matc3> mat_cplxc3;
   vector<double> f;
   vector<const void *> row_ptrs_cache;
@@ -194,7 +204,9 @@ void execute_rendering(const render_options &input) {
   omp_lock_t lock;
   omp_init_lock(&lock);
 
-  std::clock_t time = std::clock();
+  double wtime = omp_get_wtime();
+
+  // std::clock_t time = std::clock();
 
 #pragma omp parallel for schedule(dynamic)
   for (int frameidx = 0; frameidx < input.sources.size(); frameidx++) {
@@ -221,6 +233,7 @@ void execute_rendering(const render_options &input) {
     bool smooth_norm2;
     bool color_by_norm2;
     bool render_age_only;
+    bool render_norm2_only;
     bool write_gray;
     bool use_q_method;
     q_compute_method q_detail_method;
@@ -232,12 +245,14 @@ void execute_rendering(const render_options &input) {
         write_gray = true;
         render_age_only = true;
         use_q_method = false;
+        render_norm2_only = false;
         break;
       case render_method::age_norm2_q:
         smooth_norm2 = true;
         color_by_norm2 = false;
         write_gray = false;
         render_age_only = false;
+        render_norm2_only = false;
         use_q_method = true;
         q_detail_method = q_compute_method::lightness;
         break;
@@ -246,6 +261,7 @@ void execute_rendering(const render_options &input) {
         color_by_norm2 = true;
         write_gray = false;
         render_age_only = false;
+        render_norm2_only = true;
         use_q_method = false;
         break;
       case render_method::age_q:
@@ -253,6 +269,7 @@ void execute_rendering(const render_options &input) {
         color_by_norm2 = false;
         write_gray = false;
         render_age_only = true;
+        render_norm2_only = false;
         use_q_method = true;
         q_detail_method = q_compute_method::lightness;
         break;
@@ -261,6 +278,7 @@ void execute_rendering(const render_options &input) {
         color_by_norm2 = false;
         write_gray = false;
         render_age_only = true;
+        render_norm2_only = false;
         use_q_method = true;
         q_detail_method = q_compute_method::entropy;
         break;
@@ -269,6 +287,7 @@ void execute_rendering(const render_options &input) {
         color_by_norm2 = true;
         write_gray = false;
         render_age_only = false;
+        render_norm2_only = false;
         use_q_method = true;
         q_detail_method = q_compute_method::entropy;
         break;
@@ -282,11 +301,11 @@ void execute_rendering(const render_options &input) {
 
     if (smooth_norm2) {
       smooth_by_norm2(mats->mat_int16.get(), mats->mat_norm2.get(),
-                      mats->mat_f32.get());
+                      mats->mat_f32_age_norm2.get());
     }
 
     if (color_by_norm2) {
-      coloring_by_f32_u8c3(mats->mat_int16.get(), mats->mat_f32.get(),
+      coloring_by_f32_u8c3(mats->mat_int16.get(), mats->mat_f32_age_norm2.get(),
                            mats->image->data());
     }
 
@@ -358,9 +377,9 @@ void execute_rendering(const render_options &input) {
             q_opts_atanx2.hist_skip_rows = skip_rows;
             ::smooth_age_by_q(
                 mats->mat_int16.get(),
-                (render_age_only) ? (nullptr) : (mats->mat_f32.get()),
-                input.age_maxit, &q_opts_atanx2, mats->mat_f32.get(), &q,
-                nullptr);
+                (render_age_only) ? (nullptr) : (mats->mat_f32_age_norm2.get()),
+                input.age_maxit, &q_opts_atanx2,
+                mats->mat_f32_q_reflected.get(), &q, nullptr);
             q_opts_atanx2.q_guess = q;
             break;
           case q_compute_method::entropy:
@@ -368,19 +387,24 @@ void execute_rendering(const render_options &input) {
             q_opts_entropy.hist_skip_rows = skip_rows;
             ::smooth_age_by_q_entropy(
                 mats->mat_int16.get(),
-                (render_age_only) ? (nullptr) : (mats->mat_f32.get()),
-                input.age_maxit, &q_opts_entropy, mats->mat_f32.get(), &q);
+                (render_age_only) ? (nullptr) : (mats->mat_f32_age_norm2.get()),
+                input.age_maxit, &q_opts_entropy,
+                mats->mat_f32_q_reflected.get(), &q);
             q_opts_entropy.q_guess = q;
             break;
         }
 
+        const mat_age_f32 *const mat_f32_to_be_colored =
+            (render_norm2_only) ? (mats->mat_f32_age_norm2.get())
+                                : (mats->mat_f32_q_reflected.get());
+
         if (!input.self_adaptive_f32) {
-          ::coloring_by_f32_u8c3(mats->mat_int16.get(), mats->mat_f32.get(),
+          ::coloring_by_f32_u8c3(mats->mat_int16.get(), mat_f32_to_be_colored,
                                  mats->image->data());
         } else {
           ::coloring_by_f32_u8c3_more(mats->mat_int16.get(),
-                                      mats->mat_f32.get(), mats->image->data(),
-                                      NAN, NAN);
+                                      mat_f32_to_be_colored,
+                                      mats->image->data(), NAN, NAN);
         }
       }
 
@@ -445,9 +469,8 @@ void execute_rendering(const render_options &input) {
 
   omp_destroy_lock(&lock);
 
-  time = std::clock() - time;
+  wtime = omp_get_wtime() - wtime;
 
   cout << "All tasks finished with " << failed_count << " error(s)" << endl;
-  cout << "Computation cost " << double(time) / CLOCKS_PER_SEC << " seconds."
-       << endl;
+  cout << "Computation cost " << wtime << " seconds." << endl;
 }

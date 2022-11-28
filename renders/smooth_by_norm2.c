@@ -8,8 +8,8 @@
 
 void smooth_by_norm2(const mat_age *const age, const norm2_matc1 *const norm2,
                      mat_age_f32 *const dest) {
-  if (age == NULL || norm2 == NULL || dest == NULL)
-    return;
+  //if (age == NULL || norm2 == NULL || dest == NULL)
+    //return;
 
   static const float inv_log2_log2_6 =
       0.7298506383143850140271524651325307786464691162109375;

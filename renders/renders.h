@@ -1,9 +1,9 @@
 #ifndef BS_RENDERS_H
 #define BS_RENDERS_H
 
-#include "burning_ship.h"
-
 #include <stddef.h>
+
+#include "burning_ship.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,6 +15,7 @@ typedef struct {
 
 extern const float nan_32;
 
+// smooth the value of age with norm2, and store the value into dest
 void smooth_by_norm2(const mat_age *const age, const norm2_matc1 *const norm2,
                      mat_age_f32 *const dest);
 
@@ -32,8 +33,8 @@ bool coloring_by_f32_u8c3(const mat_age *const age,
 bool coloring_by_f32_u8c3_more(const mat_age *const age,
                                const mat_age_f32 *const smooth,
                                void *const dest_u8c3,
-                               const float lower_bound, // default nan
-                               const float upper_bound  // default nan
+                               const float lower_bound,  // default nan
+                               const float upper_bound   // default nan
 );
 
 // write png
@@ -55,7 +56,7 @@ typedef struct {
   int newton_max_it;
   double err_tolerence;
   double L_mean_div_L_max;
-  double q_guess; // q_guess<=0 for invalid value
+  double q_guess;  // q_guess<=0 for invalid value
   double *f_buffer;
   int hist_skip_rows;
   int hist_skip_cols;
@@ -65,14 +66,14 @@ double max_L_mean(const int maxit, const render_by_q_options *const opt);
 
 void smooth_age_by_q(
     const mat_age *const age,
-    const mat_age_f32 *const smoothed_by_norm2, // can be NULL
-    const int16_t bs_maxit, // the max iteration when computing fractal
+    const mat_age_f32 *const smoothed_by_norm2,  // can be NULL
+    const int16_t bs_maxit,  // the max iteration when computing fractal
     const render_by_q_options *const opt, mat_age_f32 *const dest,
     double *const q_dest, double *const L_mean_dest);
 
 typedef struct {
   int newton_max_it;
-  double q_guess; // q_guess<=0 for invalid value
+  double q_guess;  // q_guess<=0 for invalid value
   double *f_buffer;
   int hist_skip_rows;
   int hist_skip_cols;
@@ -80,8 +81,8 @@ typedef struct {
 
 void smooth_age_by_q_entropy(
     const mat_age *const age,
-    const mat_age_f32 *const smoothed_by_norm2, // can be NULL
-    const int16_t bs_maxit, // the max iteration when computing fractal
+    const mat_age_f32 *const smoothed_by_norm2,  // can be NULL
+    const int16_t bs_maxit,  // the max iteration when computing fractal
     const render_entropy_options *const opt, mat_age_f32 *const dest,
     double *const q_dest);
 
@@ -90,4 +91,4 @@ void smooth_age_by_q_entropy(
 
 #endif
 
-#endif // BS_RENDERS_H
+#endif  // BS_RENDERS_H
