@@ -1,17 +1,14 @@
-#include "renders.h"
 #include <assert.h>
 
-#include <cmath>
-
-#include <cstdio>
-
-#include <vector>
-
 #include <array>
-
+#include <cmath>
+#include <cstdio>
 #include <cstring>
 #include <iostream>
 #include <limits>
+#include <vector>
+
+#include "renders.h"
 
 inline double age_L(const double x, const double q) {
   return 2.0 / M_PI * atan(q * x * x);
@@ -51,7 +48,7 @@ void make_histogram(const mat_age *age, const int16_t maxit,
 
   double sum = 0;
   for (int idx = 0; idx <= maxit; idx++) {
-    f[idx] += 1;
+    f[idx] += 1e-2;
     sum += f[idx];
   }
 
@@ -161,7 +158,6 @@ inline double find_q_dichotomy(const double L_mean, const double *const f,
   }
 
   while (it <= newton_max_it) {
-
     // std::cout << "[" << (lnq_high) << ", " << (lnq_mid) << ", " <<
     // (lnq_low)<< "]  ";
 
@@ -193,16 +189,14 @@ inline double find_q_dichotomy(const double L_mean, const double *const f,
     it++;
     if (std::abs((lnq_high - lnq_low)) <= 1e-9) {
       lnq_mid = (lnq_high + lnq_low) / 2;
-      if (ok != nullptr)
-        *ok = true;
+      if (ok != nullptr) *ok = true;
       return std::exp(lnq_mid);
     }
   }
 
   if (std::isfinite(lnq_high) && std::isfinite(lnq_low)) {
     lnq_mid = (lnq_high + lnq_low) / 2;
-    if (ok != nullptr)
-      *ok = true;
+    if (ok != nullptr) *ok = true;
     return std::exp(lnq_mid);
   }
 
@@ -238,8 +232,7 @@ inline double find_q_newton(const double L_mean, const double *const f,
     }
 
     if (std::abs((prev_q - q) / prev_q) < err_tolerance) {
-      if (ok != nullptr)
-        *ok = true;
+      if (ok != nullptr) *ok = true;
       break;
     }
   }
@@ -249,7 +242,7 @@ inline double find_q_newton(const double L_mean, const double *const f,
 
 void smooth_age_by_q(
     const mat_age *const age, const mat_age_f32 *const smoothed_by_norm2,
-    const int16_t bs_maxit, // the max iteration when computing fractal
+    const int16_t bs_maxit,  // the max iteration when computing fractal
     const render_by_q_options *const opt, mat_age_f32 *const dest,
     double *const q_dest, double *const L_mean_dest) {
   if (opt->f_buffer == nullptr || dest == nullptr || age == nullptr) {
@@ -285,8 +278,9 @@ void smooth_age_by_q(
     q = find_q_newton(L_mean, opt->f_buffer, bs_maxit, opt->newton_max_it,
                       opt->err_tolerence, opt->q_guess, &ok);
     if (!ok) {
-      printf("Newton method failed. Trying dichotomy method to get a better "
-             "q_guess...\n");
+      printf(
+          "Newton method failed. Trying dichotomy method to get a better "
+          "q_guess...\n");
       const double better_q_guess =
           find_q_dichotomy(L_mean, opt->f_buffer, bs_maxit, opt->newton_max_it,
                            opt->err_tolerence, opt->q_guess, &ok);
@@ -317,14 +311,11 @@ void smooth_age_by_q(
         if (smoothed_by_norm2 == nullptr) {
           dest->data[r][c] = age_L(age->data[r][c], q);
         } else {
-
           dest->data[r][c] =
               age_L(age->data[r][c] + 1 - smoothed_by_norm2->data[r][c], q);
         }
       } else {
-
         if (smoothed_by_norm2 == nullptr) {
-
           dest->data[r][c] = 0;
         } else {
           dest->data[r][c] = smoothed_by_norm2->data[r][c];
@@ -337,7 +328,6 @@ void smooth_age_by_q(
 bool find_q_newton_entropy(const double *const fx, const int16_t maxit,
                            double q_start, double &q_dest,
                            const int newton_maxit) {
-
   double lnq;
   if (q_start <= 0) {
     double ln_q_start = 0;
@@ -355,7 +345,6 @@ bool find_q_newton_entropy(const double *const fx, const int16_t maxit,
   int it = 0;
 
   while (it <= newton_maxit) {
-
     if (std::abs(lnq - prev_lnq) < 1e-5) {
       break;
     }
@@ -386,8 +375,8 @@ bool find_q_newton_entropy(const double *const fx, const int16_t maxit,
 
 void smooth_age_by_q_entropy(
     const mat_age *const age,
-    const mat_age_f32 *const smoothed_by_norm2, // can be NULL
-    const int16_t bs_maxit, // the max iteration when computing fractal
+    const mat_age_f32 *const smoothed_by_norm2,  // can be NULL
+    const int16_t bs_maxit,  // the max iteration when computing fractal
     const render_entropy_options *const opt, mat_age_f32 *const dest,
     double *const q_dest) {
   if (opt->f_buffer == nullptr || dest == nullptr || age == nullptr) {
@@ -428,14 +417,11 @@ void smooth_age_by_q_entropy(
         if (smoothed_by_norm2 == nullptr) {
           dest->data[r][c] = age_L(age->data[r][c], q);
         } else {
-
           dest->data[r][c] =
               age_L(age->data[r][c] + 1 - smoothed_by_norm2->data[r][c], q);
         }
       } else {
-
         if (smoothed_by_norm2 == nullptr) {
-
           dest->data[r][c] = 0;
         } else {
           dest->data[r][c] = smoothed_by_norm2->data[r][c];

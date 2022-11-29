@@ -8,9 +8,9 @@
 
 const ::std::unordered_set<::std::string> keywords(
     {"-j", "-fps", "-computejson", "-rendermethod", "-pngprefix", "-version",
-     "-lightness", "-rendermaxit", "-help", "-adaptivef32"});
+     "-lightness", "-rendermaxit", "-help", "-adaptivef32", "-extrapngs"});
 
-enum class render_method {
+enum class render_method : uint8_t {
   age_linear,   // map iteration times to [0,1] linearly
   norm2_only,   // map norm2 to [0,1]
   age_q,        // map iteration times  to [0,1] by q-method
@@ -34,16 +34,16 @@ struct binary_files {
 
 struct render_options {
  public:
-  int fps{60};
-  render_method method{render_method::age_linear};
   ::std::vector<binary_files> sources;
   ::std::string dest_prefix{""};
   double lightness{0.125};
   double zoomspeed;
+  int fps{60};
+  int extrapngs{0};
+  bool self_adaptive_f32{false};
+  render_method method{render_method::age_linear};
   int age_maxit;
   int render_maxit{50000};
-
-  bool self_adaptive_f32{false};
 
   int threadnum{(int)::std::thread::hardware_concurrency()};
 
@@ -55,7 +55,7 @@ struct render_options {
 
   // inline int png_height() const { return this->png_rows; }
   // inline int png_width() const { return this->png_cols; }
-
+  inline int png_per_frame() const { return fps + extrapngs; }
   inline int framecount() const { return sources.size(); }
   inline int png_count() const { return fps * framecount(); }
 };

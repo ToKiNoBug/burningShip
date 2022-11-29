@@ -50,7 +50,17 @@ void print_help() {
   cout << "    Set the max iteration times when rendering. When using "
           "q-methods, q needs to be computed via iterations, then it\'s "
           "necessary to set the max iteration times. It should be at "
-          "least 50.\n";
+          "least 50. Default value is 50.\n";
+
+  cout << "\n  -adaptivef32\n";
+  cout << "    Scale the range of a float matrix to [0,1]. This parameter is "
+          "optional, because it is guarenteed that every element in float "
+          "matrix must be in the range of [0,1]. This option MAY make images "
+          "more distinct.\n";
+
+  cout << "\n  -extrapngs <uint>\n";
+  cout << "    Render extra pngs for each .bs_frame(.gz) file. This can be "
+          "used to promote video coherency. Default value is 0.\n";
 
   cout << "\n  -help\n";
   cout << "    Show this list.\n";
@@ -460,36 +470,38 @@ bool process_input(const int argCount, const char *const *const argVal,
       dest->render_maxit = val;
       continue;
     }
+    /*
+        if (i.first == "-pngrows") {
+          if (i.second.size() <= 0) {
+            return false;
+          }
 
-    if (i.first == "-pngrows") {
-      if (i.second.size() <= 0) {
-        return false;
-      }
+          const int val = std::atoi(i.second.back().data());
 
-      const int val = std::atoi(i.second.back().data());
+          if (val <= 0 || val > burning_ship_rows) {
+            cout << "Invalid png rows : " << val << endl;
+            return false;
+          }
+          // dest->png_rows = val;
+          continue;
+        }
 
-      if (val <= 0 || val > burning_ship_rows) {
-        cout << "Invalid png rows : " << val << endl;
-        return false;
-      }
-      // dest->png_rows = val;
-      continue;
-    }
+        if (i.first == "-pngcols") {
+          if (i.second.size() <= 0) {
+            return false;
+          }
 
-    if (i.first == "-pngcols") {
-      if (i.second.size() <= 0) {
-        return false;
-      }
+          const int val = std::atoi(i.second.back().data());
 
-      const int val = std::atoi(i.second.back().data());
+          if (val <= 0 || val > burning_ship_cols) {
+            cout << "Invalid png cols : " << val << endl;
+            return false;
+          }
+          // dest->png_cols = val;
+          continue;
+        }
 
-      if (val <= 0 || val > burning_ship_cols) {
-        cout << "Invalid png cols : " << val << endl;
-        return false;
-      }
-      // dest->png_cols = val;
-      continue;
-    }
+        */
 
     if (i.first == "-help") {
       print_help();
@@ -498,6 +510,24 @@ bool process_input(const int argCount, const char *const *const argVal,
 
     if (i.first == "-adaptivef32") {
       dest->self_adaptive_f32 = true;
+      continue;
+    }
+
+    if (i.first == "-extrapngs") {
+      if (i.second.size() <= 0) {
+        return false;
+      }
+
+      const int val = std::atoi(i.second.back().data());
+
+      if (val < 0) {
+        cout << "Extrapngs should be greater or euqal to 0, but the value is "
+             << val << endl;
+        return false;
+      }
+
+      dest->extrapngs = val;
+
       continue;
     }
   }

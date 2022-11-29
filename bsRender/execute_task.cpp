@@ -322,7 +322,7 @@ void execute_rendering(const render_options &input) {
           q_opts_atanx2.f_buffer = mats->f.data();
           q_opts_atanx2.L_mean_div_L_max = input.lightness;
           // don't guess at the first time.
-          q_opts_atanx2.q_guess = -1;
+          q_opts_atanx2.q_guess = -2;
 
           // these members are determined by skip_rows and skip_cols;
           // q_opts_atanx2.hist_skip_cols;
@@ -330,16 +330,17 @@ void execute_rendering(const render_options &input) {
           break;
         case q_compute_method::entropy:
           q_opts_entropy.newton_max_it = input.render_maxit;
-          q_opts_entropy.q_guess = -1;
+          q_opts_entropy.q_guess = -2;
           q_opts_entropy.f_buffer = mats->f.data();
           break;
       }
     }
 
     // render
-    for (int pngidx = 0; pngidx < input.fps; pngidx++) {
+    for (int pngidx = 0; pngidx < input.png_per_frame(); pngidx++) {
       // set the filename
       filename = input.dest_prefix;
+
       const int current_number = frameidx * input.fps + pngidx;
 
       const int current_number_digits =
@@ -349,7 +350,12 @@ void execute_rendering(const render_options &input) {
       filename.append(max_digits - current_number_digits, '0');
 
       filename += std::to_string(current_number);
+      if (pngidx >= input.fps) filename += "_extra";
       filename += ".png";
+
+      if (std::filesystem::is_regular_file(filename.data())) {
+        continue;
+      }
 
       // compute the image size
       const double pngidx_div_fps = double(pngidx) / input.fps;
@@ -385,6 +391,7 @@ void execute_rendering(const render_options &input) {
           case q_compute_method::entropy:
             q_opts_entropy.hist_skip_cols = skip_cols;
             q_opts_entropy.hist_skip_rows = skip_rows;
+            q_opts_entropy.q_guess -= 1;
             ::smooth_age_by_q_entropy(
                 mats->mat_int16.get(),
                 (render_age_only) ? (nullptr) : (mats->mat_f32_age_norm2.get()),
@@ -454,7 +461,14 @@ void execute_rendering(const render_options &input) {
         tasks_finished++;
         cout << "[ " << tasks_finished << " / " << tasks << " , "
              << float(tasks_finished) / tasks << " ] : Generated file "
-             << filename << endl;
+             << filename;
+        if (use_q_method) {
+          cout << ", q = " << (q_detail_method == q_compute_method::entropy)
+              ? (q_opts_entropy.q_guess)
+              : (q_opts_atanx2.q_guess);
+        }
+
+        cout << endl;
       } else {
         failed_count++;
         cout << "Failed to generate file " << endl;
