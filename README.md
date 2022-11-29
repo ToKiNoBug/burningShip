@@ -51,6 +51,10 @@ bsRender -rendermethod age_norm2_q -pngprefix age_norm2_q_ -adaptivef32 -lightne
 ./bsTaskGen -centerhex 0xd69d24f39c4fd460433441ce63c7ffbf2f9426dd439e48499d91532ac609f9bf -compress -preview -zoomspeed 2 -j 20 -mode norm2 -filenameprefix ./burning_ship_1/ -maxit 32700 -framecount 110 -startscale 16
 
 ./bsRender -pngprefix ./png/ -rendermethod entropy_age_norm2 -rendermaxit 500 -fps 60 -j 16
+
+ffmpeg -r 60 -sws_flags bilinear -i ./png/%4d.png -vf scale=1920:1080 ./test.mp4
+
 ```
 
 **Dont use -adaptivef32 on q method.**
+
