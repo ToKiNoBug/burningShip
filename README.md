@@ -56,5 +56,5 @@ ffmpeg -r 60 -sws_flags bilinear -i ./png/%4d.png -vf scale=1920:1080 ./test.mp4
 
 ```
 
-**Dont use -adaptivef32 on q method.**
+**Dont use -adaptivef32 on q method for VIDEO.**
 
